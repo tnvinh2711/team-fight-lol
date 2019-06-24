@@ -33,11 +33,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private ItemFragment itemFragment;
     private BuilderFragment builderFragment;
     private InfoFragment infoFragment;
-    List<Unit> heroList = new ArrayList<>();
-    List<Item> itemList = new ArrayList<>();
-    List<Round> roundList = new ArrayList<>();
-    List<Detail> detailList = new ArrayList<>();
-    public ViewPagerAdapter(FragmentManager fm, Activity activity) {
+    public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
         heroFragment = HeroFragment.newInstance();
         roundFragment = RoundFragment.newInstance();
@@ -51,36 +47,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 builderFragment,
                 infoFragment
         };
-        getData();
     }
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-    }
-    private void getData() {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.child("unitList").getChildren()) {
-                    Unit unit = ds.getValue(Unit.class);
-                    heroList.add(unit);
-                }
-                for (DataSnapshot ds : dataSnapshot.child("itemList").getChildren()) {
-                    Item item = ds.getValue(Item.class);
-                    itemList.add(item);
-                }
-                for (DataSnapshot ds : dataSnapshot.child("roundList").getChildren()) {
-                    Round round = ds.getValue(Round.class);
-                    roundList.add(round);
-                }
-                heroFragment.setData(heroList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
     }
 
     @Override

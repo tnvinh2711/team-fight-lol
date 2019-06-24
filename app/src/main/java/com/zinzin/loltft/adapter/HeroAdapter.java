@@ -51,6 +51,7 @@ public class HeroAdapter extends RecyclerView.Adapter<HeroAdapter.ViewHolder> {
         Glide.with(activity).load(unit.getType().get(0).getUrl()).apply(RequestOptions.circleCropTransform()).into(viewHolder.ivIcon1);
         Glide.with(activity).load(unit.getType().get(1).getUrl()).apply(RequestOptions.circleCropTransform()).into(viewHolder.ivIcon2);
         if (unit.getType().size() > 2) {
+            viewHolder.ivIcon3.setVisibility(View.VISIBLE);
             Glide.with(activity).load(unit.getType().get(2).getUrl()).apply(RequestOptions.circleCropTransform()).into(viewHolder.ivIcon3);
         } else {
             viewHolder.ivIcon3.setVisibility(View.GONE);
@@ -60,7 +61,8 @@ public class HeroAdapter extends RecyclerView.Adapter<HeroAdapter.ViewHolder> {
                 viewHolder.tvTier.setText("S");
                 viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_s));
                 break;
-            case "A":viewHolder.tvTier.setText("A");
+            case "A":
+                viewHolder.tvTier.setText("A");
                 viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_a));
                 break;
             case "B":

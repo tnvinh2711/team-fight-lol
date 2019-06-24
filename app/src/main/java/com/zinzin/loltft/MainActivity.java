@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private void initUI() {
         final View view = findViewById(R.id.divider_view);
         final ViewPager viewPager = findViewById(R.id.vp_horizontal_ntb);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), this));
+        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
         final String[] colors = getResources().getStringArray(R.array.default_preview);
         view.setBackgroundColor(Color.parseColor(colors[2]));
         final NavigationTabBar navigationTabBar = findViewById(R.id.ntb_horizontal);
