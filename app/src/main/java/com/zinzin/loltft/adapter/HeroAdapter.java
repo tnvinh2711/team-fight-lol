@@ -59,31 +59,31 @@ public class HeroAdapter extends RecyclerView.Adapter<HeroAdapter.ViewHolder> {
         switch (unit.getTier()) {
             case "S":
                 viewHolder.tvTier.setText("S");
-                viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_s));
+                viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_s));
                 break;
             case "A":
                 viewHolder.tvTier.setText("A");
-                viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_a));
+                viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_a));
                 break;
             case "B":
                 viewHolder.tvTier.setText("B");
-                viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_b));
+                viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_b));
                 break;
             case "C":
                 viewHolder.tvTier.setText("C");
-                viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_c));
+                viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_c));
                 break;
             case "D":
                 viewHolder.tvTier.setText("D");
-                viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_d));
+                viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_d));
                 break;
             case "E":
                 viewHolder.tvTier.setText("E");
-                viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_e));
+                viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_e));
                 break;
             case "F":
                 viewHolder.tvTier.setText("F");
-                viewHolder.tvTier.setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.border_background_f));
+                viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_f));
                 break;
 
         }

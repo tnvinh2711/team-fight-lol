@@ -2,10 +2,10 @@ package com.zinzin.loltft.fragment;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,24 +17,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adroitandroid.chipcloud.ChipCloud;
 import com.adroitandroid.chipcloud.ChipListener;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zinzin.loltft.DetailActivity;
 import com.zinzin.loltft.R;
 import com.zinzin.loltft.adapter.HeroAdapter;
-import com.zinzin.loltft.model.Detail;
-import com.zinzin.loltft.model.Item;
 import com.zinzin.loltft.model.Origin;
-import com.zinzin.loltft.model.Round;
+import com.zinzin.loltft.model.Type;
 import com.zinzin.loltft.model.Unit;
 
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public class HeroFragment extends Fragment {
     }
 
     private void setUpBottomSheetDialog() {
-        mBottomSheetDialog = new Dialog(getActivity(),R.style.AppTheme);
+        mBottomSheetDialog = new Dialog(getActivity(), R.style.AppTheme);
         mBottomSheetDialog.setCancelable(true);
         final View sheetView = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_filter, null);
 
@@ -211,26 +210,36 @@ public class HeroFragment extends Fragment {
             }
             if (!classSelected.equals("")) {
                 for (int i = heroListFilter.size() - 1; i >= 0; i--) {
-                    if (!heroListFilter.get(i).getType().get(0).getName().equals(classSelected)) {
-                        if (!heroListFilter.get(i).getType().get(1).getName().equals(classSelected)) {
-                            if (TextUtils.isEmpty(heroListFilter.get(i).getType().get(2).getName()) && !heroListFilter.get(i).getType().get(2).getName().equals(classSelected)) {
-                                if (TextUtils.isEmpty(heroListFilter.get(i).getType().get(3).getName()) && !heroListFilter.get(i).getType().get(3).getName().equals(classSelected)) {
-                                    heroListFilter.remove(i);
-                                }
-                            }
+                    List<Type> type = heroListFilter.get(i).getType();
+                    if (type.size() == 2) {
+                        if (!type.get(0).getName().equals(classSelected) && !type.get(1).getName().equals(classSelected)) {
+                            heroListFilter.remove(i);
+                        }
+                    } else if (type.size() == 3) {
+                        if (!type.get(0).getName().equals(classSelected) && !type.get(1).getName().equals(classSelected) && !type.get(2).getName().equals(classSelected)) {
+                            heroListFilter.remove(i);
+                        }
+                    } else if (type.size() == 4) {
+                        if (!type.get(0).getName().equals(classSelected) && !type.get(1).getName().equals(classSelected) && !type.get(2).getName().equals(classSelected) && !type.get(3).getName().equals(classSelected)) {
+                            heroListFilter.remove(i);
                         }
                     }
                 }
             }
             if (!originSelected.equals("")) {
                 for (int i = heroListFilter.size() - 1; i >= 0; i--) {
-                    if (!heroListFilter.get(i).getType().get(0).getName().equals(originSelected)) {
-                        if (!heroListFilter.get(i).getType().get(1).getName().equals(originSelected)) {
-                            if (TextUtils.isEmpty(heroListFilter.get(i).getType().get(2).getName()) && !heroListFilter.get(i).getType().get(2).getName().equals(originSelected)) {
-                                if (TextUtils.isEmpty(heroListFilter.get(i).getType().get(3).getName()) && !heroListFilter.get(i).getType().get(3).getName().equals(originSelected)) {
-                                    heroListFilter.remove(i);
-                                }
-                            }
+                    List<Type> type = heroListFilter.get(i).getType();
+                    if (type.size() == 2) {
+                        if (!type.get(0).getName().equals(originSelected) && !type.get(1).getName().equals(originSelected)) {
+                            heroListFilter.remove(i);
+                        }
+                    } else if (type.size() == 3) {
+                        if (!type.get(0).getName().equals(originSelected) && !type.get(1).getName().equals(originSelected) && !type.get(2).getName().equals(originSelected)) {
+                            heroListFilter.remove(i);
+                        }
+                    } else if (type.size() == 4) {
+                        if (!type.get(0).getName().equals(originSelected) && !type.get(1).getName().equals(originSelected) && !type.get(2).getName().equals(originSelected) && !type.get(3).getName().equals(originSelected)) {
+                            heroListFilter.remove(i);
                         }
                     }
                 }
@@ -298,6 +307,9 @@ public class HeroFragment extends Fragment {
         heroAdapter.setListener(new HeroAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
             }
         });
     }
@@ -307,7 +319,7 @@ public class HeroFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot!= null){
+                if (dataSnapshot != null) {
                     for (DataSnapshot ds : dataSnapshot.child("unitList").getChildren()) {
                         Unit unit = ds.getValue(Unit.class);
                         heroList.add(unit);
