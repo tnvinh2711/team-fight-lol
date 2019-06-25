@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -70,8 +71,13 @@ public class HeroFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hero, container, false);
-        getData();
         initView(view);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getData();
+            }
+        },200);
         return view;
     }
 
@@ -315,7 +321,7 @@ public class HeroFragment extends Fragment {
     }
 
     private void getData() {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("unit");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

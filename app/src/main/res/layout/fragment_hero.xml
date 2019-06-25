@@ -23,15 +23,15 @@
             android:drawableLeft="@drawable/search"
             android:drawablePadding="15dp"
             android:hint="Search by name"
+            android:imeOptions="actionDone"
             android:maxLength="20"
+            android:singleLine="true"
             android:textColor="@android:color/white"
             android:textColorHint="#747474"
             android:textSize="12sp"
-            android:singleLine="true"
             app:layout_constraintEnd_toStartOf="@+id/iv_filter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:imeOptions="actionDone"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_filter"
@@ -47,9 +47,10 @@
         android:id="@+id/rcv_units"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cl_filter">
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layout_constraintTop_toBottomOf="@+id/cl_filter"></androidx.recyclerview.widget.RecyclerView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,40 +9,43 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.zinzin.loltft.R;
-import com.zinzin.loltft.model.Type;
+import com.zinzin.loltft.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemIconAdapter extends RecyclerView.Adapter<ItemIconAdapter.ViewHolder> {
+public class CombineAdapter extends RecyclerView.Adapter<CombineAdapter.ViewHolder> {
 
     private Activity activity;
-    private List<String> imgList = new ArrayList<>();
+    private List<String> combineList = new ArrayList<>();
 
-    public ItemIconAdapter(Activity activity, List<String> imgList) {
+    public CombineAdapter(Activity activity,List<String> combineList) {
         this.activity = activity;
-        this.imgList = imgList;
+        this.combineList = combineList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_icon_item, viewGroup, false);
-        return new ItemIconAdapter.ViewHolder(view);
+                .inflate(R.layout.item_combine, viewGroup, false);
+        return new CombineAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        viewHolder.bind(imgList.get(position));
+        viewHolder.bind(combineList.get(position), position);
+        Glide.with(activity).load(combineList.get(position)).apply(RequestOptions.bitmapTransform(new RoundedCorners(14))).into(viewHolder.ivIcon);
     }
 
     @Override
     public int getItemCount() {
-        return imgList.size();
+        return combineList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,11 +53,10 @@ public class ItemIconAdapter extends RecyclerView.Adapter<ItemIconAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivIcon = itemView.findViewById(R.id.iv_icon);
+            ivIcon = itemView.findViewById(R.id.iv_item_combine);
         }
 
-        void bind(final String item) {
-            Glide.with(activity).load(item).into(ivIcon);
+        void bind(final String combine, final int position) {
         }
     }
 }

@@ -11,61 +11,59 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.zinzin.loltft.R;
-import com.zinzin.loltft.model.Type;
-import com.zinzin.loltft.utils.Utils;
+import com.zinzin.loltft.model.Round;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailUnitAdapter extends RecyclerView.Adapter<DetailUnitAdapter.ViewHolder> {
+public class CreepsAdapter extends RecyclerView.Adapter<CreepsAdapter.ViewHolder> {
 
     private Activity activity;
-    private List<Type> infos = new ArrayList<>();
+    private List<Round> creepList = new ArrayList<>();
 
-    public DetailUnitAdapter(Activity activity, List<Type> infos) {
+    public CreepsAdapter(Activity activity, List<Round> creepList) {
         this.activity = activity;
-        this.infos = infos;
+        this.creepList = creepList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.detail_units_items, viewGroup, false);
-        return new DetailUnitAdapter.ViewHolder(view);
+                .inflate(R.layout.creeps_items, viewGroup, false);
+        return new CreepsAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        viewHolder.bind(infos.get(position));
+        viewHolder.bind(creepList.get(position), position);
+        Round creep = creepList.get(position);
+        Glide.with(activity).load(creep.getUrl()).apply(RequestOptions.bitmapTransform(new RoundedCorners(14))).into(viewHolder.ivIcon);
+        viewHolder.tvName.setText("Round: "+creep.getName());
+        viewHolder.tvDes.setText(creep.getDes());
     }
 
     @Override
     public int getItemCount() {
-        return infos.size();
+        return creepList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivIcon;
         TextView tvName;
-        TextView tvType;
         TextView tvDes;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivIcon = itemView.findViewById(R.id.iv_icon);
+            ivIcon = itemView.findViewById(R.id.iv_items);
             tvName = itemView.findViewById(R.id.tv_name);
-            tvType = itemView.findViewById(R.id.tv_type);
             tvDes = itemView.findViewById(R.id.tv_des);
         }
 
-        void bind(final Type item) {
-            Glide.with(activity).load(item.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivIcon);
-            tvName.setText(item.getName());
-            tvType.setText(item.getType());
-            tvDes.setText(Utils.linkStringFromArray(item.getDes()));
+        void bind(final Round item, final int position) {
         }
     }
 }

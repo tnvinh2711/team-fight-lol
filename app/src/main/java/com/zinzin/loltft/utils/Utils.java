@@ -7,6 +7,8 @@ import android.graphics.ColorMatrixColorFilter;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -31,6 +33,11 @@ public class Utils {
         return text;
     }
 
+    public static String convertObjToJson(Object obj) {
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        return json;
+    }
 
     public static String linkStringFromArray(List<String> array) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -38,7 +45,7 @@ public class Utils {
             stringBuilder.append(array.get(i)).append("\n");
         }
         String s = stringBuilder.toString();
-        return s.substring(0, s.length() - 2);
+        return s.substring(0, s.length() - 1);
     }
 
     public static void setLocked(ImageView v) {

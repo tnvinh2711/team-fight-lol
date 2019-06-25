@@ -1,6 +1,7 @@
 package com.zinzin.loltft.adapter;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,23 @@ public class HeroAdapter extends RecyclerView.Adapter<HeroAdapter.ViewHolder> {
                 viewHolder.tvTier.setBackground(activity.getResources().getDrawable(R.drawable.border_background_f));
                 break;
 
+        }
+        switch (unit.getCost()) {
+            case "$1":
+                viewHolder.tvNameUnit.setTextColor(activity.getResources().getColor(R.color.color_cost_1));
+                break;
+            case "$2":
+                viewHolder.tvNameUnit.setTextColor(activity.getResources().getColor(R.color.color_cost_2));
+                break;
+            case "$3":
+                viewHolder.tvNameUnit.setTextColor(activity.getResources().getColor(R.color.color_cost_3));
+                break;
+            case "$4":
+                viewHolder.tvNameUnit.setTextColor(activity.getResources().getColor(R.color.color_cost_4));
+                break;
+            case "$5":
+                viewHolder.tvNameUnit.setTextColor(activity.getResources().getColor(R.color.color_cost_5));
+                break;
         }
 
     }

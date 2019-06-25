@@ -1,10 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFC107">
-    <TextView
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:scrollbars="none">
+
+    <EditText
+        android:id="@+id/edt_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="item"/>
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/search_border_background"
+        android:drawableStart="@drawable/search"
+        android:drawableLeft="@drawable/search"
+        android:drawablePadding="15dp"
+        android:hint="Search by name"
+        android:imeOptions="actionDone"
+        android:maxLength="20"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textColorHint="#747474"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"></androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 </LinearLayout>

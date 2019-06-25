@@ -9,7 +9,7 @@ public class Unit {
     private String tier = "";
     private String url = "";
     private List<Type> type = new ArrayList<>();
-
+    private boolean isClick = false;
     public Unit() {
     }
 
@@ -51,5 +51,13 @@ public class Unit {
 
     public void setType(List<Type> type) {
         this.type = type;
+    }
+
+    public boolean isClick() {
+        return isClick;
+    }
+
+    public void setClick(boolean click) {
+        isClick = click;
     }
 }

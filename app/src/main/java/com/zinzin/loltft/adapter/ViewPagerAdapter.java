@@ -1,29 +1,16 @@
 package com.zinzin.loltft.adapter;
 
-import android.app.Activity;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.zinzin.loltft.fragment.BuilderFragment;
 import com.zinzin.loltft.fragment.HeroFragment;
 import com.zinzin.loltft.fragment.InfoFragment;
 import com.zinzin.loltft.fragment.ItemFragment;
 import com.zinzin.loltft.fragment.RoundFragment;
-import com.zinzin.loltft.model.Detail;
-import com.zinzin.loltft.model.Item;
-import com.zinzin.loltft.model.Round;
-import com.zinzin.loltft.model.Unit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 

@@ -13,18 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.zinzin.loltft.R;
-import com.zinzin.loltft.model.Type;
-import com.zinzin.loltft.utils.Utils;
+import com.zinzin.loltft.model.UnitsInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailUnitAdapter extends RecyclerView.Adapter<DetailUnitAdapter.ViewHolder> {
+public class UnitBuilderSynergyAdapter extends RecyclerView.Adapter<UnitBuilderSynergyAdapter.ViewHolder> {
 
     private Activity activity;
-    private List<Type> infos = new ArrayList<>();
+    private List<UnitsInfo> infos = new ArrayList<>();
 
-    public DetailUnitAdapter(Activity activity, List<Type> infos) {
+    public UnitBuilderSynergyAdapter(Activity activity, List<UnitsInfo> infos) {
         this.activity = activity;
         this.infos = infos;
     }
@@ -34,12 +33,24 @@ public class DetailUnitAdapter extends RecyclerView.Adapter<DetailUnitAdapter.Vi
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.detail_units_items, viewGroup, false);
-        return new DetailUnitAdapter.ViewHolder(view);
+        return new UnitBuilderSynergyAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        viewHolder.bind(infos.get(position));
+        viewHolder.bind(infos.get(position), position);
+        UnitsInfo unitsInfo = infos.get(position);
+        Glide.with(activity).load(unitsInfo.getImgInfo()).apply(RequestOptions.circleCropTransform()).into(viewHolder.ivIcon);
+
+        viewHolder.tvName.setText(unitsInfo.getName() + " - " + unitsInfo.getCount());
+        viewHolder.tvType.setText(unitsInfo.getType());
+        if (unitsInfo.getDes().equals("")) {
+            viewHolder.tvDes.setVisibility(View.GONE);
+        } else {
+            viewHolder.tvDes.setVisibility(View.VISIBLE);
+        }
+
+        viewHolder.tvDes.setText(unitsInfo.getDes());
     }
 
     @Override
@@ -61,11 +72,7 @@ public class DetailUnitAdapter extends RecyclerView.Adapter<DetailUnitAdapter.Vi
             tvDes = itemView.findViewById(R.id.tv_des);
         }
 
-        void bind(final Type item) {
-            Glide.with(activity).load(item.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivIcon);
-            tvName.setText(item.getName());
-            tvType.setText(item.getType());
-            tvDes.setText(Utils.linkStringFromArray(item.getDes()));
+        void bind(final UnitsInfo item, final int position) {
         }
     }
 }
