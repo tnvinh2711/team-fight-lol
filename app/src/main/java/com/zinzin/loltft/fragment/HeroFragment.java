@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -47,6 +48,7 @@ import java.util.Set;
 public class HeroFragment extends Fragment {
     public static String TAG = HeroFragment.class.getSimpleName();
     private RecyclerView rvUnits;
+    private LinearLayout llLoading;
     private HeroAdapter heroAdapter;
     List<Unit> heroList = new ArrayList<>();
     List<Origin> classList = new ArrayList<>();
@@ -89,6 +91,9 @@ public class HeroFragment extends Fragment {
         rvUnits = view.findViewById(R.id.rcv_units);
         edtSearch = view.findViewById(R.id.edt_search);
         ivFilter = view.findViewById(R.id.iv_filter);
+        llLoading = view.findViewById(R.id.ll_loading);
+        llLoading.setVisibility(View.VISIBLE);
+        rvUnits.setVisibility(View.GONE);
     }
 
     private void setUpBottomSheetDialog() {
@@ -339,6 +344,8 @@ public class HeroFragment extends Fragment {
                         originList.add(origin);
                     }
                 }
+                llLoading.setVisibility(View.GONE);
+                rvUnits.setVisibility(View.VISIBLE);
                 setUpRecycleView();
                 setData(heroList);
                 setUpEditText();

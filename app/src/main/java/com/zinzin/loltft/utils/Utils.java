@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.net.ConnectivityManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
@@ -72,4 +73,10 @@ public class Utils {
             e.printStackTrace();
         }
     }
+    public static boolean isNetworkConnected(Activity activity) {
+        ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
+
 }

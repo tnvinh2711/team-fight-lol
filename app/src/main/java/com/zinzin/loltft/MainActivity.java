@@ -5,16 +5,20 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
 import com.zinzin.loltft.adapter.ViewPagerAdapter;
 
 import java.util.ArrayList;
 
+import am.appwise.components.ni.NoInternetDialog;
 import devlight.io.library.ntb.NavigationTabBar;
 
 
 public class MainActivity extends AppCompatActivity {
+    private NoInternetDialog noInternetDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initUI() {
+        noInternetDialog = new NoInternetDialog.Builder(this).build();
         final View view = findViewById(R.id.divider_view);
         final ViewPager viewPager = findViewById(R.id.vp_horizontal_ntb);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
@@ -90,5 +95,32 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (noInternetDialog != null && noInternetDialog.isShowing()) noInternetDialog.dismiss();
+        super.onDestroy();
+    }
+
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 3000);
     }
 }

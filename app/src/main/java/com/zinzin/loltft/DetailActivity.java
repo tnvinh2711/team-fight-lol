@@ -84,10 +84,10 @@ public class DetailActivity extends AppCompatActivity {
     private void setupUI(Detail detail) {
         tvName.setText(detail.getName());
         tvSubName.setText(detail.getNick_name());
-        Glide.with(this).load(detail.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivFullUnit);
+        Glide.with(getApplicationContext()).load(detail.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivFullUnit);
         tvDes.setText(detail.getDes());
         tvStat.setText(detail.getStat());
-        Glide.with(this).load(detail.getSkill_url()).apply(RequestOptions.circleCropTransform()).into(ivSkillUnit);
+        Glide.with(getApplicationContext()).load(detail.getSkill_url()).apply(RequestOptions.circleCropTransform()).into(ivSkillUnit);
         tvSkillDes.setText(detail.getSkill_des());
         tvSkillName.setText(detail.getSkill_name());
         tvSkillTag.setText(detail.getSkill_damage());
