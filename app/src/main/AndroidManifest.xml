@@ -26,6 +26,9 @@
         <activity android:name="com.zinzin.loltft.DetailActivity"
             android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait"></activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5796098881172039~7278199612"/>
     </application>
 
 </manifest>

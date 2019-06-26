@@ -6,24 +6,40 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vp_horizontal_ntb"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vp_horizontal_ntb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/adView" />
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-5796098881172039/2544392464"></com.google.android.gms.ads.AdView>
+    </RelativeLayout>
+
     <View
+        android:id="@+id/divider_view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/divider_view"
         android:background="#8D8D8D"></View>
 
     <devlight.io.library.ntb.NavigationTabBar
         android:id="@+id/ntb_horizontal"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/colorPrimaryDark"
         android:elevation="5dp"
         app:ntb_animation_duration="300"
-        android:background="@color/colorPrimaryDark"
         app:ntb_badged="false"
         app:ntb_scaled="true"
         app:ntb_swiped="true"

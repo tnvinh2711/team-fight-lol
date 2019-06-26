@@ -7,8 +7,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.zinzin.loltft.adapter.ViewPagerAdapter;
 
 import java.util.ArrayList;
@@ -19,10 +24,34 @@ import devlight.io.library.ntb.NavigationTabBar;
 
 public class MainActivity extends AppCompatActivity {
     private NoInternetDialog noInternetDialog;
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this, "ca-app-pub-5796098881172039~7278199612");
+        mAdView = findViewById(R.id.adView);
+        mAdView.setVisibility(View.GONE);
+        mAdView.loadAd(new AdRequest.Builder().build());
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                mAdView.setVisibility(View.VISIBLE);
+                mAdView.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_up));
+            }
+
+            @Override
+            public void onAdOpened() {
+                mAdView.setVisibility(View.GONE);
+                mAdView.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_down));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdView.loadAd(new AdRequest.Builder().build());
+                    }
+                }, 1800000);
+            }
+        });
         initUI();
     }
 
