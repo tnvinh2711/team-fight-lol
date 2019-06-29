@@ -1,10 +1,60 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#009688">
-    <TextView
+    android:focusableInTouchMode="true"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teamfight Tactics"
+            android:textSize="22sp"
+            android:layout_margin="16dp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal"
+            android:text="Welcome to our LoL Teamfight Tactics Guide\nHere you can view all the best champions, items, rounds or builder a team suit for you." />
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/ll_ads_show"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:text="info"/>
-</LinearLayout>
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal"
+            android:text="Don't forget view ads to this application up-to-date!!!" />
+        <LinearLayout
+            android:layout_width="100dp"
+            android:id="@+id/ll_ads"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:src="@drawable/ads_icon"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="view ads"
+                android:textColor="@color/white"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+       </LinearLayout>
+</androidx.core.widget.NestedScrollView>

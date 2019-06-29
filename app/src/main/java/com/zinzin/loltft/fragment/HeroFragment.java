@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.adroitandroid.chipcloud.ChipCloud;
 import com.adroitandroid.chipcloud.ChipListener;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +39,7 @@ import com.zinzin.loltft.adapter.HeaderRecyclerViewSection;
 import com.zinzin.loltft.model.Origin;
 import com.zinzin.loltft.model.Type;
 import com.zinzin.loltft.model.Unit;
+import com.zinzin.loltft.utils.Preference;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,16 +54,17 @@ public class HeroFragment extends Fragment {
     public static String TAG = HeroFragment.class.getSimpleName();
     private RecyclerView rvUnits;
     private SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
-    List<Unit> heroList = new ArrayList<>();
-    List<Unit> heroList_s = new ArrayList<>();
-    List<Unit> heroList_a = new ArrayList<>();
-    List<Unit> heroList_b = new ArrayList<>();
-    List<Unit> heroList_c = new ArrayList<>();
-    List<Unit> heroList_d = new ArrayList<>();
-    List<Unit> heroList_e = new ArrayList<>();
-    List<Unit> heroList_f = new ArrayList<>();
-    List<Origin> classList = new ArrayList<>();
-    List<Origin> originList = new ArrayList<>();
+    private LinearLayout llLoading;
+    private List<Unit> heroList = new ArrayList<>();
+    private List<Unit> heroList_s = new ArrayList<>();
+    private List<Unit> heroList_a = new ArrayList<>();
+    private List<Unit> heroList_b = new ArrayList<>();
+    private List<Unit> heroList_c = new ArrayList<>();
+    private List<Unit> heroList_d = new ArrayList<>();
+    private List<Unit> heroList_e = new ArrayList<>();
+    private List<Unit> heroList_f = new ArrayList<>();
+    private List<Origin> classList = new ArrayList<>();
+    private List<Origin> originList = new ArrayList<>();
     private List<Unit> heroListFilter = new ArrayList<>();
     private EditText edtSearch;
     private ImageView ivFilter;
@@ -71,6 +78,10 @@ public class HeroFragment extends Fragment {
     private String classSelected = "";
     private String originSelected = "";
 
+    private boolean isLoadAd;
+    private int clickitem = 0;
+    private InterstitialAd mInterstitialAd;
+
     public static HeroFragment newInstance() {
         return new HeroFragment();
     }
@@ -79,19 +90,53 @@ public class HeroFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hero, container, false);
         initView(view);
+        loadAd();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 getData();
             }
-        },200);
+        }, 200);
         return view;
     }
 
+    private void loadAd() {
+        mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAd.setAdUnitId("ca-app-pub-5796098881172039/1121152663");
+        if (Preference.getBoolean(getActivity(), "firstrun", true)) {
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        } else {
+            long timeOld = Preference.getLong(getActivity(), "Time", 0);
+            long timeNew = System.currentTimeMillis();
+            if (timeOld != 0 && timeNew - timeOld >= 86400000) {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            } else {
+                if (!Preference.getBoolean(getActivity(), "LoadAds", false)) {
+                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                }
+            }
+        }
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                isLoadAd = true;
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Preference.getBoolean(getActivity(), "LoadAds", false);
+                isLoadAd = false;
+            }
+
+        });
+    }
     private void initView(View view) {
         rvUnits = view.findViewById(R.id.rcv_units);
         edtSearch = view.findViewById(R.id.edt_search);
         ivFilter = view.findViewById(R.id.iv_filter);
+        llLoading = view.findViewById(R.id.ll_loading);
+        llLoading.setVisibility(View.VISIBLE);
+        rvUnits.setVisibility(View.GONE);
     }
 
     private void setUpBottomSheetDialog() {
@@ -406,9 +451,19 @@ public class HeroFragment extends Fragment {
         viewSection_F.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("name",item.getName());
-                startActivity(intent);
+                clickitem++;
+                if (isLoadAd && clickitem > 2) {
+                    Preference.save(getActivity(), "firstrun", false);
+                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
+                    Preference.save(getActivity(), "LoadAds", true);
+                    mInterstitialAd.show();
+                    isLoadAd = false;
+                } else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("name", item.getName());
+                    startActivity(intent);
+                }
+
             }
         });
         sectionAdapter.addSection(viewSection_S);
@@ -457,6 +512,8 @@ public class HeroFragment extends Fragment {
                         originList.add(origin);
                     }
                 }
+                llLoading.setVisibility(View.GONE);
+                rvUnits.setVisibility(View.VISIBLE);
                 setUpRecycleView();
                 setUpEditText();
                 setUpBottomSheetDialog();
