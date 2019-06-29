@@ -18,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zinzin.loltft.DetailActivity;
 import com.zinzin.loltft.R;
-import com.zinzin.loltft.adapter.HeroAdapter;
+import com.zinzin.loltft.adapter.HeaderRecyclerViewSection;
 import com.zinzin.loltft.model.Origin;
 import com.zinzin.loltft.model.Type;
 import com.zinzin.loltft.model.Unit;
@@ -44,11 +42,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+
 public class HeroFragment extends Fragment {
     public static String TAG = HeroFragment.class.getSimpleName();
     private RecyclerView rvUnits;
-    private HeroAdapter heroAdapter;
+    private SectionedRecyclerViewAdapter sectionAdapter = new SectionedRecyclerViewAdapter();
     List<Unit> heroList = new ArrayList<>();
+    List<Unit> heroList_s = new ArrayList<>();
+    List<Unit> heroList_a = new ArrayList<>();
+    List<Unit> heroList_b = new ArrayList<>();
+    List<Unit> heroList_c = new ArrayList<>();
+    List<Unit> heroList_d = new ArrayList<>();
+    List<Unit> heroList_e = new ArrayList<>();
+    List<Unit> heroList_f = new ArrayList<>();
     List<Origin> classList = new ArrayList<>();
     List<Origin> originList = new ArrayList<>();
     private List<Unit> heroListFilter = new ArrayList<>();
@@ -79,10 +86,6 @@ public class HeroFragment extends Fragment {
             }
         },200);
         return view;
-    }
-
-    public void setData(List<Unit> heroes) {
-        heroAdapter.updateList(heroes);
     }
 
     private void initView(View view) {
@@ -266,7 +269,8 @@ public class HeroFragment extends Fragment {
                 return lhs.getName().compareToIgnoreCase(rhs.getName());
             }
         });
-        heroAdapter.updateList(heroListFilter);
+        getListSection(heroListFilter);
+        sectionAdapter.notifyDataSetChanged();
     }
 
 
@@ -298,7 +302,41 @@ public class HeroFragment extends Fragment {
             }
         });
     }
+    private void getListSection(List<Unit> heroList){
+        heroList_s.clear();
+        heroList_a.clear();
+        heroList_b.clear();
+        heroList_c.clear();
+        heroList_d.clear();
+        heroList_e.clear();
+        heroList_f.clear();
+     for (Unit unit: heroList){
+         switch (unit.getTier()){
+             case "S":
+                 heroList_s.add(unit);
+                 break;
+             case "A":
+                 heroList_a.add(unit);
+                 break;
+             case "B":
+                 heroList_b.add(unit);
+                 break;
+             case "C":
+                 heroList_c.add(unit);
+                 break;
+             case "D":
+                 heroList_d.add(unit);
+                 break;
+             case "E":
+                 heroList_e.add(unit);
+                 break;
+             case "F":
+                 heroList_f.add(unit);
+                 break;
 
+         }
+     }
+    }
     private void setUpRecycleView() {
         GridLayoutManager adapterManager;
         int orientation = getResources().getConfiguration().orientation;
@@ -307,10 +345,11 @@ public class HeroFragment extends Fragment {
         } else {
             adapterManager = new GridLayoutManager(getActivity(), 3);
         }
-        rvUnits.setLayoutManager(adapterManager);
-        heroAdapter = new HeroAdapter(getActivity(), heroList);
-        rvUnits.setAdapter(heroAdapter);
-        heroAdapter.setListener(new HeroAdapter.OnItemClickListener() {
+
+        getListSection(heroList);
+
+        HeaderRecyclerViewSection viewSection_S = new HeaderRecyclerViewSection(getActivity(),"Tier S",heroList_s,R.color.color_tier_s);
+        viewSection_S.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
                 Intent intent = new Intent(getActivity(),DetailActivity.class);
@@ -318,6 +357,85 @@ public class HeroFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        HeaderRecyclerViewSection viewSection_A = new HeaderRecyclerViewSection(getActivity(),"Tier A",heroList_a,R.color.color_tier_a);
+        viewSection_A.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Unit item, int position) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
+            }
+        });
+        HeaderRecyclerViewSection viewSection_B = new HeaderRecyclerViewSection(getActivity(),"Tier B",heroList_b,R.color.color_tier_b);
+        viewSection_B.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Unit item, int position) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
+            }
+        });
+        HeaderRecyclerViewSection viewSection_C = new HeaderRecyclerViewSection(getActivity(),"Tier C",heroList_c,R.color.color_tier_c);
+        viewSection_C.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Unit item, int position) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
+            }
+        });
+        HeaderRecyclerViewSection viewSection_D = new HeaderRecyclerViewSection(getActivity(),"Tier D",heroList_d,R.color.color_tier_d);
+        viewSection_D.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Unit item, int position) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
+            }
+        });
+        HeaderRecyclerViewSection viewSection_E = new HeaderRecyclerViewSection(getActivity(),"Tier E",heroList_e,R.color.color_tier_e);
+        viewSection_E.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Unit item, int position) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
+            }
+        });
+        HeaderRecyclerViewSection viewSection_F = new HeaderRecyclerViewSection(getActivity(),"Tier F",heroList_f,R.color.color_tier_f);
+        viewSection_F.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Unit item, int position) {
+                Intent intent = new Intent(getActivity(),DetailActivity.class);
+                intent.putExtra("name",item.getName());
+                startActivity(intent);
+            }
+        });
+        sectionAdapter.addSection(viewSection_S);
+        sectionAdapter.addSection(viewSection_A);
+        sectionAdapter.addSection(viewSection_B);
+        sectionAdapter.addSection(viewSection_C);
+        sectionAdapter.addSection(viewSection_D);
+        sectionAdapter.addSection(viewSection_E);
+        sectionAdapter.addSection(viewSection_F);
+        adapterManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (sectionAdapter.getSectionItemViewType(position)) {
+                    case SectionedRecyclerViewAdapter.VIEW_TYPE_HEADER:
+                        int orientation = getResources().getConfiguration().orientation;
+                        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            return 5;
+                        } else {
+                            return 3;
+                        }
+                    default:
+                        return 1;
+                }
+            }
+        });
+        rvUnits.setLayoutManager(adapterManager);
+        rvUnits.setAdapter(sectionAdapter);
     }
 
     private void getData() {
@@ -340,7 +458,6 @@ public class HeroFragment extends Fragment {
                     }
                 }
                 setUpRecycleView();
-                setData(heroList);
                 setUpEditText();
                 setUpBottomSheetDialog();
                 setUpFilter();
@@ -369,9 +486,11 @@ public class HeroFragment extends Fragment {
         }
         if (text.equals("")) {
             listUnitsFilter.clear();
-            heroAdapter.updateList(unitsBase);
+            getListSection(unitsBase);
+            sectionAdapter.notifyDataSetChanged();
         } else {
-            heroAdapter.updateList(listUnitsFilter);
+            getListSection(listUnitsFilter);
+            sectionAdapter.notifyDataSetChanged();
         }
     }
 
@@ -386,7 +505,8 @@ public class HeroFragment extends Fragment {
             adapterManager = new GridLayoutManager(getActivity(), 3);
         }
         rvUnits.setLayoutManager(adapterManager);
-        heroAdapter.notifyDataSetChanged();
+        getListSection(heroList);
+        sectionAdapter.notifyDataSetChanged();
     }
 
 }

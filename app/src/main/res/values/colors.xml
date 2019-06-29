@@ -19,5 +19,13 @@
     <color name="color_cost_4">#E908E6</color>
     <color name="color_cost_5">#ff8800</color>
 
+    <color name="color_tier_s">#F12C2F</color>
+    <color name="color_tier_a">#BE7539</color>
+    <color name="color_tier_b">#BEB33A</color>
+    <color name="color_tier_c">#72C018</color>
+    <color name="color_tier_d">#07B2A2</color>
+    <color name="color_tier_e">#0437B1</color>
+    <color name="color_tier_f">#710BB4</color>
+
 
 </resources>

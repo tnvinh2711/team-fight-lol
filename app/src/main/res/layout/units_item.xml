@@ -17,18 +17,6 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/border_background"
             android:padding="1dp" />
-
-        <TextView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:padding="1dp"
-            android:visibility="visible"
-            android:text="S"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:background="@drawable/border_background_s"
-            android:id="@+id/tv_tier"
-            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
     <LinearLayout
