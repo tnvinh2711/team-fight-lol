@@ -5,27 +5,27 @@
     android:background="@color/colorPrimary">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teamfight Tactics"
+        android:textSize="22sp"
+        android:layout_margin="16dp"
+        android:layout_gravity="center"
+        android:textColor="@color/white"/>
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Teamfight Tactics"
-            android:textSize="22sp"
-            android:layout_margin="16dp"
-            android:layout_gravity="center"
-            android:textColor="@color/white"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:textColor="@color/white"
-            android:gravity="center_horizontal"
-            android:text="Welcome to our LoL Teamfight Tactics Guide\nHere you can view all the best champions, items, rounds or builder a team suit for you." />
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/white"
+        android:gravity="center_horizontal"
+        android:text="Welcome to our LoL Teamfight Tactics Guide\nHere you can view all the best champions, items, rounds or builder a team suit for you." />
 
-        <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:id="@+id/ll_ads_show"
         android:layout_gravity="center"

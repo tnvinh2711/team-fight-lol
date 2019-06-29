@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -40,6 +43,7 @@ import com.zinzin.loltft.model.Origin;
 import com.zinzin.loltft.model.Type;
 import com.zinzin.loltft.model.Unit;
 import com.zinzin.loltft.utils.Preference;
+import com.zinzin.loltft.utils.WelcomeDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +71,7 @@ public class HeroFragment extends Fragment {
     private List<Origin> originList = new ArrayList<>();
     private List<Unit> heroListFilter = new ArrayList<>();
     private EditText edtSearch;
-    private ImageView ivFilter;
+    private ImageView ivFilter, ivInfo;
     private Dialog mBottomSheetDialog;
     private boolean isFilter = false;
     private String[] listOrigin;
@@ -78,9 +82,10 @@ public class HeroFragment extends Fragment {
     private String classSelected = "";
     private String originSelected = "";
 
-    private boolean isLoadAd;
+    private WelcomeDialog welcomeDialog;
+    private boolean isLoadAd, isLoadClickAd;
     private int clickitem = 0;
-    private InterstitialAd mInterstitialAd;
+    private InterstitialAd mInterstitialAd, mInterstitialAdClick;
 
     public static HeroFragment newInstance() {
         return new HeroFragment();
@@ -91,6 +96,7 @@ public class HeroFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_hero, container, false);
         initView(view);
         loadAd();
+        setUpDialog();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -102,7 +108,10 @@ public class HeroFragment extends Fragment {
 
     private void loadAd() {
         mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAdClick = new InterstitialAd(getActivity());
         mInterstitialAd.setAdUnitId("ca-app-pub-5796098881172039/1121152663");
+        mInterstitialAdClick.setAdUnitId("ca-app-pub-5796098881172039/2309686229");
+        mInterstitialAdClick.loadAd(new AdRequest.Builder().build());
         if (Preference.getBoolean(getActivity(), "firstrun", true)) {
             mInterstitialAd.loadAd(new AdRequest.Builder().build());
         } else {
@@ -129,14 +138,53 @@ public class HeroFragment extends Fragment {
             }
 
         });
+        mInterstitialAdClick.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                isLoadClickAd = true;
+            }
+
+            @Override
+            public void onAdClosed() {
+                mInterstitialAdClick.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                mInterstitialAdClick.loadAd(new AdRequest.Builder().build());
+            }
+        });
     }
+
     private void initView(View view) {
         rvUnits = view.findViewById(R.id.rcv_units);
         edtSearch = view.findViewById(R.id.edt_search);
         ivFilter = view.findViewById(R.id.iv_filter);
+        ivInfo = view.findViewById(R.id.iv_info);
         llLoading = view.findViewById(R.id.ll_loading);
         llLoading.setVisibility(View.VISIBLE);
         rvUnits.setVisibility(View.GONE);
+        ivInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (welcomeDialog != null && !welcomeDialog.isShowing()) welcomeDialog.show();
+            }
+        });
+    }
+
+    private void setUpDialog() {
+        welcomeDialog = new WelcomeDialog(getActivity(), new WelcomeDialog.DialogCallBack() {
+            @Override
+            public void onClickOpen() {
+                if (isLoadClickAd) {
+                    mInterstitialAdClick.show();
+                    isLoadClickAd = false;
+                } else {
+                    Toast.makeText(getActivity(), "Không có quảng cáo, xin vui lòng mở sau", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        welcomeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     private void setUpBottomSheetDialog() {
@@ -347,7 +395,8 @@ public class HeroFragment extends Fragment {
             }
         });
     }
-    private void getListSection(List<Unit> heroList){
+
+    private void getListSection(List<Unit> heroList) {
         heroList_s.clear();
         heroList_a.clear();
         heroList_b.clear();
@@ -355,33 +404,34 @@ public class HeroFragment extends Fragment {
         heroList_d.clear();
         heroList_e.clear();
         heroList_f.clear();
-     for (Unit unit: heroList){
-         switch (unit.getTier()){
-             case "S":
-                 heroList_s.add(unit);
-                 break;
-             case "A":
-                 heroList_a.add(unit);
-                 break;
-             case "B":
-                 heroList_b.add(unit);
-                 break;
-             case "C":
-                 heroList_c.add(unit);
-                 break;
-             case "D":
-                 heroList_d.add(unit);
-                 break;
-             case "E":
-                 heroList_e.add(unit);
-                 break;
-             case "F":
-                 heroList_f.add(unit);
-                 break;
+        for (Unit unit : heroList) {
+            switch (unit.getTier()) {
+                case "S":
+                    heroList_s.add(unit);
+                    break;
+                case "A":
+                    heroList_a.add(unit);
+                    break;
+                case "B":
+                    heroList_b.add(unit);
+                    break;
+                case "C":
+                    heroList_c.add(unit);
+                    break;
+                case "D":
+                    heroList_d.add(unit);
+                    break;
+                case "E":
+                    heroList_e.add(unit);
+                    break;
+                case "F":
+                    heroList_f.add(unit);
+                    break;
 
-         }
-     }
+            }
+        }
     }
+
     private void setUpRecycleView() {
         GridLayoutManager adapterManager;
         int orientation = getResources().getConfiguration().orientation;
@@ -393,61 +443,61 @@ public class HeroFragment extends Fragment {
 
         getListSection(heroList);
 
-        HeaderRecyclerViewSection viewSection_S = new HeaderRecyclerViewSection(getActivity(),"Tier S",heroList_s,R.color.color_tier_s);
+        HeaderRecyclerViewSection viewSection_S = new HeaderRecyclerViewSection(getActivity(), "Tier S", heroList_s, R.color.color_tier_s);
         viewSection_S.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         });
-        HeaderRecyclerViewSection viewSection_A = new HeaderRecyclerViewSection(getActivity(),"Tier A",heroList_a,R.color.color_tier_a);
+        HeaderRecyclerViewSection viewSection_A = new HeaderRecyclerViewSection(getActivity(), "Tier A", heroList_a, R.color.color_tier_a);
         viewSection_A.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         });
-        HeaderRecyclerViewSection viewSection_B = new HeaderRecyclerViewSection(getActivity(),"Tier B",heroList_b,R.color.color_tier_b);
+        HeaderRecyclerViewSection viewSection_B = new HeaderRecyclerViewSection(getActivity(), "Tier B", heroList_b, R.color.color_tier_b);
         viewSection_B.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         });
-        HeaderRecyclerViewSection viewSection_C = new HeaderRecyclerViewSection(getActivity(),"Tier C",heroList_c,R.color.color_tier_c);
+        HeaderRecyclerViewSection viewSection_C = new HeaderRecyclerViewSection(getActivity(), "Tier C", heroList_c, R.color.color_tier_c);
         viewSection_C.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         });
-        HeaderRecyclerViewSection viewSection_D = new HeaderRecyclerViewSection(getActivity(),"Tier D",heroList_d,R.color.color_tier_d);
+        HeaderRecyclerViewSection viewSection_D = new HeaderRecyclerViewSection(getActivity(), "Tier D", heroList_d, R.color.color_tier_d);
         viewSection_D.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         });
-        HeaderRecyclerViewSection viewSection_E = new HeaderRecyclerViewSection(getActivity(),"Tier E",heroList_e,R.color.color_tier_e);
+        HeaderRecyclerViewSection viewSection_E = new HeaderRecyclerViewSection(getActivity(), "Tier E", heroList_e, R.color.color_tier_e);
         viewSection_E.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(),DetailActivity.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         });
-        HeaderRecyclerViewSection viewSection_F = new HeaderRecyclerViewSection(getActivity(),"Tier F",heroList_f,R.color.color_tier_f);
+        HeaderRecyclerViewSection viewSection_F = new HeaderRecyclerViewSection(getActivity(), "Tier F", heroList_f, R.color.color_tier_f);
         viewSection_F.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
