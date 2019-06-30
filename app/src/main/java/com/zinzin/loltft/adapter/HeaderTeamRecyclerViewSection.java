@@ -54,7 +54,6 @@ public class HeaderTeamRecyclerViewSection extends StatelessSection {
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewHolder.itemView.setClickable(false);
                 if (listener != null)
                     listener.OnItemClick(hero, position);
             }
