@@ -447,54 +447,108 @@ public class HeroFragment extends Fragment {
         viewSection_S.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("name", item.getName());
-                startActivity(intent);
+                clickitem++;
+                if (isLoadAd && clickitem > 2) {
+                    Preference.save(getActivity(), "firstrun", false);
+                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
+                    Preference.save(getActivity(), "LoadAds", true);
+                    mInterstitialAd.show();
+                    isLoadAd = false;
+                } else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("name", item.getName());
+                    startActivity(intent);
+                }
             }
         });
         HeaderRecyclerViewSection viewSection_A = new HeaderRecyclerViewSection(getActivity(), "Tier A", heroList_a, R.color.color_tier_a);
         viewSection_A.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("name", item.getName());
-                startActivity(intent);
+                clickitem++;
+                if (isLoadAd && clickitem > 2) {
+                    Preference.save(getActivity(), "firstrun", false);
+                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
+                    Preference.save(getActivity(), "LoadAds", true);
+                    mInterstitialAd.show();
+                    isLoadAd = false;
+                } else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("name", item.getName());
+                    startActivity(intent);
+                }
             }
         });
         HeaderRecyclerViewSection viewSection_B = new HeaderRecyclerViewSection(getActivity(), "Tier B", heroList_b, R.color.color_tier_b);
         viewSection_B.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("name", item.getName());
-                startActivity(intent);
+                clickitem++;
+                if (isLoadAd && clickitem > 2) {
+                    Preference.save(getActivity(), "firstrun", false);
+                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
+                    Preference.save(getActivity(), "LoadAds", true);
+                    mInterstitialAd.show();
+                    isLoadAd = false;
+                } else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("name", item.getName());
+                    startActivity(intent);
+                }
             }
         });
         HeaderRecyclerViewSection viewSection_C = new HeaderRecyclerViewSection(getActivity(), "Tier C", heroList_c, R.color.color_tier_c);
         viewSection_C.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("name", item.getName());
-                startActivity(intent);
+                clickitem++;
+                if (isLoadAd && clickitem > 2) {
+                    Preference.save(getActivity(), "firstrun", false);
+                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
+                    Preference.save(getActivity(), "LoadAds", true);
+                    mInterstitialAd.show();
+                    isLoadAd = false;
+                } else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("name", item.getName());
+                    startActivity(intent);
+                }
             }
         });
         HeaderRecyclerViewSection viewSection_D = new HeaderRecyclerViewSection(getActivity(), "Tier D", heroList_d, R.color.color_tier_d);
         viewSection_D.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("name", item.getName());
-                startActivity(intent);
+                clickitem++;
+                if (isLoadAd && clickitem > 2) {
+                    Preference.save(getActivity(), "firstrun", false);
+                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
+                    Preference.save(getActivity(), "LoadAds", true);
+                    mInterstitialAd.show();
+                    isLoadAd = false;
+                } else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("name", item.getName());
+                    startActivity(intent);
+                }
             }
         });
         HeaderRecyclerViewSection viewSection_E = new HeaderRecyclerViewSection(getActivity(), "Tier E", heroList_e, R.color.color_tier_e);
         viewSection_E.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("name", item.getName());
-                startActivity(intent);
+                clickitem++;
+                if (isLoadAd && clickitem > 2) {
+                    Preference.save(getActivity(), "firstrun", false);
+                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
+                    Preference.save(getActivity(), "LoadAds", true);
+                    mInterstitialAd.show();
+                    isLoadAd = false;
+                } else {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("name", item.getName());
+                    startActivity(intent);
+                }
             }
         });
         HeaderRecyclerViewSection viewSection_F = new HeaderRecyclerViewSection(getActivity(), "Tier F", heroList_f, R.color.color_tier_f);

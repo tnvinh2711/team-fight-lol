@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         getResources().getDrawable(R.drawable.info_unselect),
                         Color.parseColor(colors[4]))
                         .selectedIcon(getResources().getDrawable(R.drawable.info))
-                        .title("Info")
+                        .title("Teams")
                         .build()
         );
         navigationTabBar.setBgColor(R.color.colorPrimaryDark);
