@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.zinzin.loltft.fragment.BuilderFragment;
+import com.zinzin.loltft.fragment.InfoBuilderFragment;
 import com.zinzin.loltft.fragment.HeroFragment;
 import com.zinzin.loltft.fragment.InfoFragment;
 import com.zinzin.loltft.fragment.ItemFragment;
@@ -18,14 +18,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private HeroFragment heroFragment;
     private RoundFragment roundFragment;
     private ItemFragment itemFragment;
-    private BuilderFragment builderFragment;
+    private InfoBuilderFragment builderFragment;
     private InfoFragment infoFragment;
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
         heroFragment = HeroFragment.newInstance();
         roundFragment = RoundFragment.newInstance();
         itemFragment = ItemFragment.newInstance();
-        builderFragment = BuilderFragment.newInstance();
+        builderFragment = InfoBuilderFragment.newInstance();
         infoFragment = InfoFragment.newInstance();
         childFragments = new Fragment[] {
                 itemFragment,

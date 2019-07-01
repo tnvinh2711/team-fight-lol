@@ -40,7 +40,6 @@ import com.zinzin.loltft.utils.Contants;
 import com.zinzin.loltft.utils.Preference;
 import com.zinzin.loltft.utils.Utils;
 import com.zinzin.loltft.view.CustomLayoutManager;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,8 +49,8 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BuilderFragment extends Fragment {
-    public static String TAG = BuilderFragment.class.getSimpleName();
+public class InfoBuilderFragment extends Fragment {
+    public static String TAG = InfoBuilderFragment.class.getSimpleName();
     private RecyclerView rcvChoose, rcvSynergy;
     private Button btnAdd;
     private Button btnReset;
@@ -61,12 +60,13 @@ public class BuilderFragment extends Fragment {
     private UnitBuilderSynergyAdapter unitBuilderSynergyAdapter;
     private List<Unit> unitsList = new ArrayList<>();
     private List<Unit> unitsChoose = new ArrayList<>();
+    private List<String> listNameChoose = new ArrayList<>();
     private List<Origin> originList = new ArrayList<>();
     private List<Origin> classList = new ArrayList<>();
     List<UnitsInfo> unitsInfos = new ArrayList<>();
 
-    public static BuilderFragment newInstance() {
-        return new BuilderFragment();
+    public static InfoBuilderFragment newInstance() {
+        return new InfoBuilderFragment();
     }
 
     @Override
@@ -122,16 +122,12 @@ public class BuilderFragment extends Fragment {
     }
 
     private void setUpRcvSynergy() {
-        if(!Preference.getString(getActivity(), Contants.KEY_BUILDER_LIST_SYNERGY).equals("")){
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<UnitsInfo>>() {}.getType();
-            unitsInfos = gson.fromJson(Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_SYNERGY), type);
-        }
         LinearLayoutManager layoutManager2
                 = new CustomLayoutManager(getActivity());
         rcvSynergy.setLayoutManager(layoutManager2);
         unitBuilderSynergyAdapter = new UnitBuilderSynergyAdapter(getActivity(), unitsInfos);
         rcvSynergy.setAdapter(unitBuilderSynergyAdapter);
+        setDataSynergy();
     }
 
     private void setDataSynergy() {
@@ -264,6 +260,7 @@ public class BuilderFragment extends Fragment {
             public void onClick(View v) {
                 btnReset.setVisibility(View.GONE);
                 unitsChoose.clear();
+                listNameChoose.clear();
                 unitsBuilderAdapter.notifyDataSetChanged();
                 for (Unit units : unitsList) {
                     if (units.isClick()) units.setClick(false);
@@ -277,12 +274,6 @@ public class BuilderFragment extends Fragment {
     }
 
     private void setUpRcvChoose() {
-        if(!Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_CHOOSE_NAME).equals("")){
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<Unit>>() {}.getType();
-            unitsChoose = gson.fromJson(Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_CHOOSE_NAME), type);
-            btnReset.setVisibility(View.VISIBLE);
-        }
         GridLayoutManager adapterManager = new GridLayoutManager(getActivity(), 5);
         rcvChoose.setLayoutManager(adapterManager);
         unitsBuilderAdapter = new UnitsBuilderAdapter(getActivity(), unitsChoose);
@@ -320,11 +311,19 @@ public class BuilderFragment extends Fragment {
         });
         GridLayoutManager adapterManager = new GridLayoutManager(getActivity(), 4);
         rvUnits.setLayoutManager(adapterManager);
-        if(!Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_UNITS).equals("")){
-            unitsList.clear();
+        if(!Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_CHOOSE_NAME).equals("")){
             Gson gson = new Gson();
-            Type type = new TypeToken<List<Unit>>() {}.getType();
-            unitsList = gson.fromJson(Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_UNITS), type);
+            Type type = new TypeToken<List<String>>() {}.getType();
+            listNameChoose = gson.fromJson(Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_CHOOSE_NAME), type);
+            unitsChoose.clear();
+            for (String name : listNameChoose) {
+                for (Unit unit : unitsList) {
+                    if (unit.getName().equals(name)) {
+                        unit.setClick(true);
+                        unitsChoose.add(unit);
+                    }
+                }
+            }
         }
         unitsBottomAdapter = new UnitsBottomAdapter(getActivity(), unitsList);
         rvUnits.setAdapter(unitsBottomAdapter);
@@ -370,14 +369,15 @@ public class BuilderFragment extends Fragment {
     }
 
     private void savePreference() {
-        Preference.save(getActivity(), Contants.KEY_BUILDER_LIST_UNITS, Utils.convertObjToJson(unitsList));
-        Preference.save(getActivity(), Contants.KEY_BUILDER_LIST_CHOOSE_NAME,Utils.convertObjToJson(unitsChoose));
-        Preference.save(getActivity(), Contants.KEY_BUILDER_LIST_SYNERGY,Utils.convertObjToJson(unitsInfos));
+        listNameChoose.clear();
+        for (Unit unit: unitsChoose){
+            listNameChoose.add(unit.getName());
+        }
+        Preference.save(getActivity(), Contants.KEY_BUILDER_LIST_CHOOSE_NAME,Utils.convertObjToJson(listNameChoose));
     }
     private void removePreference() {
-        Preference.remove(getActivity(), Contants.KEY_BUILDER_LIST_UNITS);
         Preference.remove(getActivity(), Contants.KEY_BUILDER_LIST_CHOOSE_NAME);
-        Preference.remove(getActivity(), Contants.KEY_BUILDER_LIST_SYNERGY);
+
     }
 
     private void filter(String text) {
