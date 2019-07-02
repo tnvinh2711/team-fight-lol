@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -31,6 +32,7 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity {
     public static String TAG = DetailActivity.class.getSimpleName();
     private ImageView ivFullUnit, ivSkillUnit;
+    private Detail detail = new Detail();
     private TextView tvStat;
     private TextView tvName, tvSubName, tvDes, tvSkillName, tvSkillDes, tvSkillTag;
     private RecyclerView rcvType, rcvItem, rcvMiniIcon;
@@ -55,23 +57,31 @@ public class DetailActivity extends AppCompatActivity {
         tvSkillName = findViewById(R.id.tv_name_skill);
         tvSkillDes = findViewById(R.id.tv_des_skill);
         tvSkillTag = findViewById(R.id.tv_tag_skill);
-//        rcvUnit = findViewById(R.id.iv_units_full);
         rcvMiniIcon = findViewById(R.id.rcv_mini);
         rcvType = findViewById(R.id.rcv_detail_unit);
         rcvItem = findViewById(R.id.rcv_item_unit);
-        setData();
+        setData(new OnDataReceiveCallback() {
+            @Override
+            public void onDataReceived() {
+                if (detail != null) {
+                    setupUI(detail);
+                } else {
+                    Toast.makeText(DetailActivity.this, "Something went wrong!! please back android try again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 //        setUpRcv();
     }
 
-    private void setData() {
+    private void setData(final OnDataReceiveCallback callback) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("detailList").child(getIntent().getStringExtra("name"));
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
-                    Detail detail = dataSnapshot.getValue(Detail.class);
-                    setupUI(detail);
+                    detail = dataSnapshot.getValue(Detail.class);
                 }
+                callback.onDataReceived();
             }
 
             @Override

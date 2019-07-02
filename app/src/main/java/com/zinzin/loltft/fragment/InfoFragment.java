@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zinzin.loltft.DetailActivity;
+import com.zinzin.loltft.OnDataReceiveCallback;
 import com.zinzin.loltft.R;
 import com.zinzin.loltft.adapter.HeaderRecyclerViewSection;
 import com.zinzin.loltft.adapter.HeaderTeamRecyclerViewSection;
@@ -46,11 +47,16 @@ public class InfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         rcvTeam = view.findViewById(R.id.rcv_team);
-        getData();
+        getData(new OnDataReceiveCallback() {
+            @Override
+            public void onDataReceived() {
+                setUpRecycleView();
+            }
+        });
         return view;
     }
 
-    private void getData() {
+    private void getData(final OnDataReceiveCallback callback) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("teamList");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -61,7 +67,7 @@ public class InfoFragment extends Fragment {
                         teamList.add(team);
                     }
                 }
-                setUpRecycleView();
+                callback.onDataReceived();
             }
 
             @Override
@@ -99,4 +105,5 @@ public class InfoFragment extends Fragment {
         rcvTeam.setLayoutManager(adapterManager);
         rcvTeam.setAdapter(sectionAdapter);
     }
+
 }

@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.zinzin.loltft.SplashActivity"
+            android:configChanges="screenLayout|orientation|screenSize"
             android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -21,10 +22,16 @@
             </intent-filter>
         </activity>
         <activity android:name="com.zinzin.loltft.MainActivity"
+            android:configChanges="screenLayout|orientation|screenSize"
             android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait"></activity>
         <activity android:name="com.zinzin.loltft.DetailActivity"
+            android:configChanges="screenLayout|orientation|screenSize"
             android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name="com.zinzin.loltft.BuildTeamActivity"
+            android:configChanges="screenLayout|orientation|screenSize"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"></activity>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

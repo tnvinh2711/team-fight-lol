@@ -1,4 +1,4 @@
-package com.zinzin.loltft.fragment;
+package com.zinzin.loltft;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -8,14 +8,14 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,11 +28,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zinzin.loltft.DetailActivity;
-import com.zinzin.loltft.R;
 import com.zinzin.loltft.adapter.UnitBuilderSynergyAdapter;
 import com.zinzin.loltft.adapter.UnitsBottomAdapter;
 import com.zinzin.loltft.adapter.UnitsBuilderAdapter;
+import com.zinzin.loltft.model.Builder;
 import com.zinzin.loltft.model.Origin;
 import com.zinzin.loltft.model.Unit;
 import com.zinzin.loltft.model.UnitsInfo;
@@ -40,20 +39,21 @@ import com.zinzin.loltft.utils.Contants;
 import com.zinzin.loltft.utils.Preference;
 import com.zinzin.loltft.utils.Utils;
 import com.zinzin.loltft.view.CustomLayoutManager;
-import java.lang.reflect.Type;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class InfoBuilderFragment extends Fragment {
-    public static String TAG = InfoBuilderFragment.class.getSimpleName();
+public class BuildTeamActivity extends AppCompatActivity {
+    public static String TAG = BuildTeamActivity.class.getSimpleName();
     private RecyclerView rcvChoose, rcvSynergy;
     private Button btnAdd;
     private Button btnReset;
+    private TextView tvSave;
+    private EditText edtName;
+    private String name;
+    private int idEdit = -998;
     private Dialog mBottomSheetDialog;
     private UnitsBuilderAdapter unitsBuilderAdapter;
     private UnitsBottomAdapter unitsBottomAdapter;
@@ -63,25 +63,81 @@ public class InfoBuilderFragment extends Fragment {
     private List<String> listNameChoose = new ArrayList<>();
     private List<Origin> originList = new ArrayList<>();
     private List<Origin> classList = new ArrayList<>();
-    List<UnitsInfo> unitsInfos = new ArrayList<>();
-
-    public static InfoBuilderFragment newInstance() {
-        return new InfoBuilderFragment();
-    }
+    private List<UnitsInfo> unitsInfos = new ArrayList<>();
+    private List<Builder> builders = new ArrayList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_info_builder, container, false);
-        initView(view);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_info_builder);
+        name = getIntent().getStringExtra("name");
+        initView();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                getData();
+                getData(new OnDataReceiveCallback() {
+                    @Override
+                    public void onDataReceived() {
+                        getDataFromPreferrence();
+                        setUpBottomSheet();
+                        setUpBtnAdd();
+                        setUpBtnReset();
+                        setUpRcvChoose();
+                        setUpRcvSynergy();
+                        setUpEdtName();
+                    }
+                });
             }
-        },100);
-        return view;
+        }, 100);
     }
-    private void getData() {
+
+    private void getDataFromPreferrence() {
+        if (!Preference.getString(this, Contants.KEY_BUILDER_LIST_CHOOSE_NAME).equals("")) {
+            Gson gson = new Gson();
+            builders = gson.fromJson(Preference.getString(this, Contants.KEY_BUILDER_LIST_CHOOSE_NAME), new TypeToken<List<Builder>>() {
+            }.getType());
+            unitsChoose.clear();
+            listNameChoose.clear();
+            for (int i = 0; i < builders.size(); i++) {
+                if (builders.get(i).getName_team().equals(name)) {
+                    idEdit = i;
+                    listNameChoose = builders.get(i).getHero_name();
+                }
+            }
+            for (String name : listNameChoose) {
+                for (Unit unit : unitsList) {
+                    if (unit.getName().equals(name)) {
+                        unit.setClick(true);
+                        unitsChoose.add(unit);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setUpEdtName() {
+        edtName.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        edtName.setText(name);
+        edtName.setSelection(edtName.getText().length());
+        edtName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                name = s.toString();
+            }
+        });
+    }
+
+    private void getData(final OnDataReceiveCallback callback) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("unit");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -100,11 +156,7 @@ public class InfoBuilderFragment extends Fragment {
                         originList.add(origin);
                     }
                 }
-                setUpBottomSheet();
-                setUpBtnAdd();
-                setUpBtnReset();
-                setUpRcvChoose();
-                setUpRcvSynergy();
+                callback.onDataReceived();
             }
 
             @Override
@@ -113,19 +165,28 @@ public class InfoBuilderFragment extends Fragment {
             }
         });
     }
-    private void initView(View view) {
-        rcvChoose = view.findViewById(R.id.rcv_choose);
-        rcvSynergy = view.findViewById(R.id.rcv_synergy);
-        btnAdd = view.findViewById(R.id.btn_add);
-        btnReset = view.findViewById(R.id.btn_reset);
-        mBottomSheetDialog = new Dialog(getActivity(), R.style.AppTheme);
+
+    private void initView() {
+        rcvChoose = findViewById(R.id.rcv_choose);
+        tvSave = findViewById(R.id.tv_save);
+        rcvSynergy = findViewById(R.id.rcv_synergy);
+        btnAdd = findViewById(R.id.btn_add);
+        edtName = findViewById(R.id.edt_name);
+        btnReset = findViewById(R.id.btn_reset);
+        mBottomSheetDialog = new Dialog(this, R.style.AppTheme);
+        tvSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveTeam();
+            }
+        });
     }
 
     private void setUpRcvSynergy() {
         LinearLayoutManager layoutManager2
-                = new CustomLayoutManager(getActivity());
+                = new CustomLayoutManager(this);
         rcvSynergy.setLayoutManager(layoutManager2);
-        unitBuilderSynergyAdapter = new UnitBuilderSynergyAdapter(getActivity(), unitsInfos);
+        unitBuilderSynergyAdapter = new UnitBuilderSynergyAdapter(this, unitsInfos);
         rcvSynergy.setAdapter(unitBuilderSynergyAdapter);
         setDataSynergy();
     }
@@ -154,14 +215,13 @@ public class InfoBuilderFragment extends Fragment {
             }
         }
         for (Map.Entry<String, Integer> entry : duplicates.entrySet()) {
-            Log.e("duplicatesRace", entry.getKey() + " " + entry.getValue() + "");
             for (Origin origin : originList) {
                 if (origin.getName().equals(entry.getKey())) {
                     UnitsInfo unitsInfo = null;
-                    switch (origin.getDes().size()){
+                    switch (origin.getDes().size()) {
                         case 1:
                             int bonus1_1 = Character.getNumericValue(origin.getDes().get(0).charAt(1));
-                            if(entry.getValue() >= bonus1_1){
+                            if (entry.getValue() >= bonus1_1) {
                                 unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", origin.getDes().get(0), entry.getValue());
                             } else {
                                 unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", "", entry.getValue());
@@ -170,31 +230,31 @@ public class InfoBuilderFragment extends Fragment {
                         case 2:
                             int bonus2_1 = Character.getNumericValue(origin.getDes().get(0).charAt(1));
                             int bonus2_2 = Character.getNumericValue(origin.getDes().get(1).charAt(1));
-                            if(entry.getValue() < bonus2_1){
+                            if (entry.getValue() < bonus2_1) {
                                 unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", "", entry.getValue());
                             }
-                            if(entry.getValue()>= bonus2_1 && entry.getValue() < bonus2_2){
+                            if (entry.getValue() >= bonus2_1 && entry.getValue() < bonus2_2) {
                                 unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", origin.getDes().get(0), entry.getValue());
                             }
-                            if(entry.getValue() >= bonus2_2){
-                                unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", getBonus(origin.getDes(),2), entry.getValue());
+                            if (entry.getValue() >= bonus2_2) {
+                                unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", getBonus(origin.getDes(), 2), entry.getValue());
                             }
                             break;
                         case 3:
                             int bonus3_1 = Character.getNumericValue(origin.getDes().get(0).charAt(1));
                             int bonus3_2 = Character.getNumericValue(origin.getDes().get(1).charAt(1));
                             int bonus3_3 = Character.getNumericValue(origin.getDes().get(2).charAt(1));
-                            if(entry.getValue() < bonus3_1){
+                            if (entry.getValue() < bonus3_1) {
                                 unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", "", entry.getValue());
                             }
-                            if(entry.getValue()>= bonus3_1 && entry.getValue() < bonus3_2){
+                            if (entry.getValue() >= bonus3_1 && entry.getValue() < bonus3_2) {
                                 unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", origin.getDes().get(0), entry.getValue());
                             }
-                            if(entry.getValue() >= bonus3_2 && entry.getValue() < bonus3_3){
-                                unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", getBonus(origin.getDes(),2), entry.getValue());
+                            if (entry.getValue() >= bonus3_2 && entry.getValue() < bonus3_3) {
+                                unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", getBonus(origin.getDes(), 2), entry.getValue());
                             }
-                            if(entry.getValue() >= bonus3_3){
-                                unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", getBonus(origin.getDes(),3), entry.getValue());
+                            if (entry.getValue() >= bonus3_3) {
+                                unitsInfo = new UnitsInfo(origin.getUrl(), entry.getKey(), "Origin", getBonus(origin.getDes(), 3), entry.getValue());
                             }
                             break;
                     }
@@ -203,14 +263,13 @@ public class InfoBuilderFragment extends Fragment {
             }
         }
         for (Map.Entry<String, Integer> entry : duplicates.entrySet()) {
-            Log.e("duplicatesClass", entry.getKey() + " " + entry.getValue() + "");
             for (Origin class_ : classList) {
                 if (class_.getName().equals(entry.getKey())) {
                     UnitsInfo unitsInfo = null;
-                    switch (class_.getDes().size()){
+                    switch (class_.getDes().size()) {
                         case 1:
                             int bonus1_1 = Character.getNumericValue(class_.getDes().get(0).charAt(1));
-                            if(entry.getValue() >= bonus1_1){
+                            if (entry.getValue() >= bonus1_1) {
                                 unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", class_.getDes().get(0), entry.getValue());
                             } else {
                                 unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", "", entry.getValue());
@@ -219,31 +278,31 @@ public class InfoBuilderFragment extends Fragment {
                         case 2:
                             int bonus2_1 = Character.getNumericValue(class_.getDes().get(0).charAt(1));
                             int bonus2_2 = Character.getNumericValue(class_.getDes().get(1).charAt(1));
-                            if(entry.getValue() < bonus2_1){
+                            if (entry.getValue() < bonus2_1) {
                                 unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", "", entry.getValue());
                             }
-                            if(entry.getValue()>= bonus2_1 && entry.getValue() < bonus2_2){
+                            if (entry.getValue() >= bonus2_1 && entry.getValue() < bonus2_2) {
                                 unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", class_.getDes().get(0), entry.getValue());
                             }
-                            if(entry.getValue() >= bonus2_2){
-                                unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", getBonus(class_.getDes(),2), entry.getValue());
+                            if (entry.getValue() >= bonus2_2) {
+                                unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", getBonus(class_.getDes(), 2), entry.getValue());
                             }
                             break;
                         case 3:
                             int bonus3_1 = Character.getNumericValue(class_.getDes().get(0).charAt(1));
                             int bonus3_2 = Character.getNumericValue(class_.getDes().get(1).charAt(1));
                             int bonus3_3 = Character.getNumericValue(class_.getDes().get(2).charAt(1));
-                            if(entry.getValue() < bonus3_1){
+                            if (entry.getValue() < bonus3_1) {
                                 unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", "", entry.getValue());
                             }
-                            if(entry.getValue()>= bonus3_1 && entry.getValue() < bonus3_2){
+                            if (entry.getValue() >= bonus3_1 && entry.getValue() < bonus3_2) {
                                 unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", class_.getDes().get(0), entry.getValue());
                             }
-                            if(entry.getValue() >= bonus3_2 && entry.getValue() < bonus3_3){
-                                unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", getBonus(class_.getDes(),2), entry.getValue());
+                            if (entry.getValue() >= bonus3_2 && entry.getValue() < bonus3_3) {
+                                unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", getBonus(class_.getDes(), 2), entry.getValue());
                             }
-                            if(entry.getValue() >= bonus3_3){
-                                unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", getBonus(class_.getDes(),3), entry.getValue());
+                            if (entry.getValue() >= bonus3_3) {
+                                unitsInfo = new UnitsInfo(class_.getUrl(), entry.getKey(), "Class", getBonus(class_.getDes(), 3), entry.getValue());
                             }
                             break;
                     }
@@ -255,6 +314,7 @@ public class InfoBuilderFragment extends Fragment {
     }
 
     private void setUpBtnReset() {
+        if(idEdit != -998) btnReset.setVisibility(View.VISIBLE);
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,28 +328,27 @@ public class InfoBuilderFragment extends Fragment {
                 unitsBottomAdapter.notifyDataSetChanged();
                 unitsInfos.clear();
                 unitBuilderSynergyAdapter.notifyDataSetChanged();
-                removePreference();
             }
         });
     }
 
     private void setUpRcvChoose() {
-        GridLayoutManager adapterManager = new GridLayoutManager(getActivity(), 5);
+        GridLayoutManager adapterManager = new GridLayoutManager(this, 5);
         rcvChoose.setLayoutManager(adapterManager);
-        unitsBuilderAdapter = new UnitsBuilderAdapter(getActivity(), unitsChoose);
+        unitsBuilderAdapter = new UnitsBuilderAdapter(this, unitsChoose);
         rcvChoose.setAdapter(unitsBuilderAdapter);
         unitsBuilderAdapter.setListener(new UnitsBuilderAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("name",item.getName());
+                Intent intent = new Intent(BuildTeamActivity.this, DetailActivity.class);
+                intent.putExtra("name", item.getName());
                 startActivity(intent);
             }
         });
     }
 
     private void setUpBottomSheet() {
-        final View sheetView = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_units, null);
+        final View sheetView = this.getLayoutInflater().inflate(R.layout.bottom_sheet_units, null);
         Button btnDone = sheetView.findViewById(R.id.btn_done);
         RecyclerView rvUnits = sheetView.findViewById(R.id.rcv_units);
         EditText edtSearch = sheetView.findViewById(R.id.edt_search);
@@ -309,23 +368,9 @@ public class InfoBuilderFragment extends Fragment {
                 filter(editable.toString());
             }
         });
-        GridLayoutManager adapterManager = new GridLayoutManager(getActivity(), 4);
+        GridLayoutManager adapterManager = new GridLayoutManager(this, 4);
         rvUnits.setLayoutManager(adapterManager);
-        if(!Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_CHOOSE_NAME).equals("")){
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<String>>() {}.getType();
-            listNameChoose = gson.fromJson(Preference.getString(getActivity(),Contants.KEY_BUILDER_LIST_CHOOSE_NAME), type);
-            unitsChoose.clear();
-            for (String name : listNameChoose) {
-                for (Unit unit : unitsList) {
-                    if (unit.getName().equals(name)) {
-                        unit.setClick(true);
-                        unitsChoose.add(unit);
-                    }
-                }
-            }
-        }
-        unitsBottomAdapter = new UnitsBottomAdapter(getActivity(), unitsList);
+        unitsBottomAdapter = new UnitsBottomAdapter(this, unitsList);
         rvUnits.setAdapter(unitsBottomAdapter);
         unitsBottomAdapter.setListener(new UnitsBottomAdapter.OnItemClickListener() {
             @Override
@@ -335,7 +380,7 @@ public class InfoBuilderFragment extends Fragment {
                         item.setClick(true);
                         unitsChoose.add(item);
                     } else {
-                        Toast.makeText(getActivity(), "Max units", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BuildTeamActivity.this, "Max units", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     item.setClick(false);
@@ -359,7 +404,6 @@ public class InfoBuilderFragment extends Fragment {
                     setDataSynergy();
                     savePreference();
                 } else {
-                    removePreference();
                     btnReset.setVisibility(View.GONE);
                 }
             }
@@ -369,14 +413,6 @@ public class InfoBuilderFragment extends Fragment {
     }
 
     private void savePreference() {
-        listNameChoose.clear();
-        for (Unit unit: unitsChoose){
-            listNameChoose.add(unit.getName());
-        }
-        Preference.save(getActivity(), Contants.KEY_BUILDER_LIST_CHOOSE_NAME,Utils.convertObjToJson(listNameChoose));
-    }
-    private void removePreference() {
-        Preference.remove(getActivity(), Contants.KEY_BUILDER_LIST_CHOOSE_NAME);
 
     }
 
@@ -407,11 +443,53 @@ public class InfoBuilderFragment extends Fragment {
         });
     }
 
-    private String getBonus(List<String> bonus, int size){
+    private String getBonus(List<String> bonus, int size) {
         StringBuilder stringBonus = new StringBuilder();
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             stringBonus.append(bonus.get(i)).append("\n");
         }
-        return stringBonus.toString().substring(0,stringBonus.toString().length()-1);
+        return stringBonus.toString().substring(0, stringBonus.toString().length() - 1);
     }
+
+    private void saveTeam() {
+//        if(idEdit!= -998) builders.remove(idEdit);
+        if (name.equals("")) {
+            Toast.makeText(this, "Name must be filled", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        listNameChoose.clear();
+        for (Unit unit : unitsChoose) {
+            listNameChoose.add(unit.getName());
+        }
+        if (listNameChoose.size() == 0) {
+            Toast.makeText(this, "Please choose Hero", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Builder teamName = new Builder();
+        teamName.setHero_name(listNameChoose);
+        teamName.setName_team(name);
+        for (int i = 0; i < builders.size(); i++) {
+            if (name.equals(builders.get(i).getName_team()) && idEdit == -998) {
+                Toast.makeText(this, "Name is existed", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        List<String> typeList = new ArrayList<>();
+        for (UnitsInfo unitsInfo : unitsInfos) {
+            if (!unitsInfo.getDes().equals("")) {
+                typeList.add(unitsInfo.getCount() + " " + unitsInfo.getName());
+            }
+        }
+        if(typeList.size()>0) teamName.setType(Utils.linkStringFromArray2(typeList));
+        if (idEdit == -998) {
+            builders.add(teamName);
+        } else {
+            builders.set(idEdit, teamName);
+        }
+        Preference.save(this, Contants.KEY_BUILDER_LIST_CHOOSE_NAME, Utils.convertObjToJson(builders));
+        Intent returnIntent = new Intent();
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
+
 }

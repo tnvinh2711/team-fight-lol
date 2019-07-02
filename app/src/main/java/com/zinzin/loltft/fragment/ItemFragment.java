@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zinzin.loltft.OnDataReceiveCallback;
 import com.zinzin.loltft.R;
 import com.zinzin.loltft.adapter.ItemAdapter;
 import com.zinzin.loltft.model.Item;
@@ -60,12 +61,19 @@ public class ItemFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                getData();
+                getData(new OnDataReceiveCallback() {
+                    @Override
+                    public void onDataReceived() {
+                        itemAdapter = new ItemAdapter(getActivity(), itemList);
+                        rcvItem.setAdapter(itemAdapter);
+                        setUpEditText();
+                    }
+                });
             }
         },100);
     }
 
-    public void getData() {
+    private void getData(final OnDataReceiveCallback callback) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("itemList");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -76,9 +84,7 @@ public class ItemFragment extends Fragment {
                         itemList.add(item);
                     }
                 }
-                itemAdapter = new ItemAdapter(getActivity(), itemList);
-                rcvItem.setAdapter(itemAdapter);
-                setUpEditText();
+                callback.onDataReceived();
             }
 
             @Override

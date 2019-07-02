@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zinzin.loltft.DetailActivity;
+import com.zinzin.loltft.OnDataReceiveCallback;
 import com.zinzin.loltft.R;
 import com.zinzin.loltft.adapter.HeaderRecyclerViewSection;
 import com.zinzin.loltft.model.Origin;
@@ -100,7 +101,17 @@ public class HeroFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                getData();
+                getData(new OnDataReceiveCallback() {
+                    @Override
+                    public void onDataReceived() {
+                        llLoading.setVisibility(View.GONE);
+                        rvUnits.setVisibility(View.VISIBLE);
+                        setUpRecycleView();
+                        setUpEditText();
+                        setUpBottomSheetDialog();
+                        setUpFilter();
+                    }
+                });
             }
         }, 200);
         return view;
@@ -117,7 +128,7 @@ public class HeroFragment extends Fragment {
         } else {
             long timeOld = Preference.getLong(getActivity(), "Time", 0);
             long timeNew = System.currentTimeMillis();
-            if (timeOld != 0 && timeNew - timeOld >= 86400000) {
+            if (timeOld != 0 && timeNew - timeOld >= 21600000) {
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
             } else {
                 if (!Preference.getBoolean(getActivity(), "LoadAds", false)) {
@@ -433,22 +444,14 @@ public class HeroFragment extends Fragment {
     }
 
     private void setUpRecycleView() {
-        GridLayoutManager adapterManager;
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            adapterManager = new GridLayoutManager(getActivity(), 5);
-        } else {
-            adapterManager = new GridLayoutManager(getActivity(), 3);
-        }
-
+        GridLayoutManager adapterManager = new GridLayoutManager(getActivity(), 3);
         getListSection(heroList);
-
         HeaderRecyclerViewSection viewSection_S = new HeaderRecyclerViewSection(getActivity(), "Tier S", heroList_s, R.color.color_tier_s);
         viewSection_S.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
                 clickitem++;
-                if (isLoadAd && clickitem > 2) {
+                if (isLoadAd && clickitem > 1) {
                     Preference.save(getActivity(), "firstrun", false);
                     Preference.save(getActivity(), "Time", System.currentTimeMillis());
                     Preference.save(getActivity(), "LoadAds", true);
@@ -466,7 +469,7 @@ public class HeroFragment extends Fragment {
             @Override
             public void OnItemClick(Unit item, int position) {
                 clickitem++;
-                if (isLoadAd && clickitem > 2) {
+                if (isLoadAd && clickitem > 1) {
                     Preference.save(getActivity(), "firstrun", false);
                     Preference.save(getActivity(), "Time", System.currentTimeMillis());
                     Preference.save(getActivity(), "LoadAds", true);
@@ -484,7 +487,7 @@ public class HeroFragment extends Fragment {
             @Override
             public void OnItemClick(Unit item, int position) {
                 clickitem++;
-                if (isLoadAd && clickitem > 2) {
+                if (isLoadAd && clickitem > 1) {
                     Preference.save(getActivity(), "firstrun", false);
                     Preference.save(getActivity(), "Time", System.currentTimeMillis());
                     Preference.save(getActivity(), "LoadAds", true);
@@ -502,7 +505,7 @@ public class HeroFragment extends Fragment {
             @Override
             public void OnItemClick(Unit item, int position) {
                 clickitem++;
-                if (isLoadAd && clickitem > 2) {
+                if (isLoadAd && clickitem > 1) {
                     Preference.save(getActivity(), "firstrun", false);
                     Preference.save(getActivity(), "Time", System.currentTimeMillis());
                     Preference.save(getActivity(), "LoadAds", true);
@@ -520,7 +523,7 @@ public class HeroFragment extends Fragment {
             @Override
             public void OnItemClick(Unit item, int position) {
                 clickitem++;
-                if (isLoadAd && clickitem > 2) {
+                if (isLoadAd && clickitem > 1) {
                     Preference.save(getActivity(), "firstrun", false);
                     Preference.save(getActivity(), "Time", System.currentTimeMillis());
                     Preference.save(getActivity(), "LoadAds", true);
@@ -538,7 +541,7 @@ public class HeroFragment extends Fragment {
             @Override
             public void OnItemClick(Unit item, int position) {
                 clickitem++;
-                if (isLoadAd && clickitem > 2) {
+                if (isLoadAd && clickitem > 1) {
                     Preference.save(getActivity(), "firstrun", false);
                     Preference.save(getActivity(), "Time", System.currentTimeMillis());
                     Preference.save(getActivity(), "LoadAds", true);
@@ -556,7 +559,7 @@ public class HeroFragment extends Fragment {
             @Override
             public void OnItemClick(Unit item, int position) {
                 clickitem++;
-                if (isLoadAd && clickitem > 2) {
+                if (isLoadAd && clickitem > 1) {
                     Preference.save(getActivity(), "firstrun", false);
                     Preference.save(getActivity(), "Time", System.currentTimeMillis());
                     Preference.save(getActivity(), "LoadAds", true);
@@ -597,7 +600,7 @@ public class HeroFragment extends Fragment {
         rvUnits.setAdapter(sectionAdapter);
     }
 
-    private void getData() {
+    private void getData(final OnDataReceiveCallback callback) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("unit");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -616,12 +619,7 @@ public class HeroFragment extends Fragment {
                         originList.add(origin);
                     }
                 }
-                llLoading.setVisibility(View.GONE);
-                rvUnits.setVisibility(View.VISIBLE);
-                setUpRecycleView();
-                setUpEditText();
-                setUpBottomSheetDialog();
-                setUpFilter();
+                callback.onDataReceived();
             }
 
             @Override
@@ -653,21 +651,6 @@ public class HeroFragment extends Fragment {
             getListSection(listUnitsFilter);
             sectionAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        GridLayoutManager adapterManager = null;
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            adapterManager = new GridLayoutManager(getActivity(), 5);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            adapterManager = new GridLayoutManager(getActivity(), 3);
-        }
-        rvUnits.setLayoutManager(adapterManager);
-        getListSection(heroList);
-        sectionAdapter.notifyDataSetChanged();
     }
 
 }

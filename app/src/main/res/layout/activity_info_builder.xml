@@ -2,21 +2,54 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/main">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:id="@+id/cl_header">
 
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Input Name Team (required)"
+            android:textColor="@color/white"
+            android:textColorHint="#666666"
+            android:layout_marginRight="8dp"
+            android:id="@+id/edt_name"
+            android:maxLines="1"
+            android:inputType="text"
+            android:ellipsize="end"
+            android:maxLength="25"
+            android:imeOptions="actionDone"
+            android:backgroundTint="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tv_save"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="SAVE"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/cl_header"
         android:id="@+id/ll_hero">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Teamfight Tactics Builder"
-            android:textSize="22sp"
-            android:layout_margin="16dp"
-            android:layout_gravity="center"
-            android:textColor="@color/white"/>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="16dp"
             android:id="@+id/rcv_choose"
@@ -28,9 +61,8 @@
             android:id="@+id/btn_reset"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp"
             android:background="@drawable/builder_border_background"
             android:text="Reset"
             android:textColor="@color/text_search_box"
@@ -82,6 +114,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="8dp"
         android:background="@drawable/builder_border_background"
-        android:text="Add/remove"
+        android:text="Add/remove Hero"
         android:textColor="@color/text_search_box" />
 </RelativeLayout>

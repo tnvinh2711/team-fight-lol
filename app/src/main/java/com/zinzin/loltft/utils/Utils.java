@@ -48,6 +48,14 @@ public class Utils {
         String s = stringBuilder.toString();
         return s.substring(0, s.length() - 1);
     }
+    public static String linkStringFromArray2(List<String> array) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < array.size(); i++) {
+            stringBuilder.append(array.get(i)).append("/");
+        }
+        String s = stringBuilder.toString();
+        return s.substring(0, s.length() - 1);
+    }
 
     public static void setLocked(ImageView v) {
         ColorMatrix matrix = new ColorMatrix();

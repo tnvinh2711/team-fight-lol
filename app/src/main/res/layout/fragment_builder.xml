@@ -30,6 +30,7 @@
             <ImageView
                 android:layout_centerInParent="true"
                 android:layout_width="25dp"
+                android:id="@+id/btn_add"
                 android:layout_height="25dp"
                 android:src="@drawable/add" />
         </RelativeLayout>
@@ -40,6 +41,5 @@
         android:id="@+id/rcv_choose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_gravity="center_horizontal"></androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>

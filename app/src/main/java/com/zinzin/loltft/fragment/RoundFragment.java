@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zinzin.loltft.OnDataReceiveCallback;
 import com.zinzin.loltft.R;
 import com.zinzin.loltft.adapter.CreepsAdapter;
 import com.zinzin.loltft.adapter.ItemAdapter;
@@ -58,12 +59,18 @@ public class RoundFragment extends Fragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                getData();
+                getData(new OnDataReceiveCallback() {
+                    @Override
+                    public void onDataReceived() {
+                        creepsAdapter = new CreepsAdapter(getActivity(), creepList);
+                        rcvCreep.setAdapter(creepsAdapter);
+                    }
+                });
             }
         },100);
     }
 
-    public void getData() {
+    public void getData(final OnDataReceiveCallback callback) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("roundList");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -74,8 +81,7 @@ public class RoundFragment extends Fragment {
                         creepList.add(round);
                     }
                 }
-                creepsAdapter = new CreepsAdapter(getActivity(), creepList);
-                rcvCreep.setAdapter(creepsAdapter);
+                callback.onDataReceived();
             }
 
             @Override
