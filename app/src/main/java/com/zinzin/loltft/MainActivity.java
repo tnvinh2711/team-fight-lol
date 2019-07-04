@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         final View view = findViewById(R.id.divider_view);
         final ViewPager viewPager = findViewById(R.id.vp_horizontal_ntb);
         viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
-        final String[] colors = getResources().getStringArray(R.array.default_preview);
+        final String[] colors = getResources().getStringArray(R.array.color);
         view.setBackgroundColor(Color.parseColor(colors[2]));
         final NavigationTabBar navigationTabBar = findViewById(R.id.ntb_horizontal);
         final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
@@ -103,6 +103,14 @@ public class MainActivity extends AppCompatActivity {
                         Color.parseColor(colors[4]))
                         .selectedIcon(getResources().getDrawable(R.drawable.info))
                         .title("Teams")
+                        .build()
+        );
+        models.add(
+                new NavigationTabBar.Model.Builder(
+                        getResources().getDrawable(R.drawable.info_unselect),
+                        Color.parseColor(colors[5]))
+                        .selectedIcon(getResources().getDrawable(R.drawable.info))
+                        .title("Ads")
                         .build()
         );
         navigationTabBar.setBgColor(R.color.colorPrimaryDark);
