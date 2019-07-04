@@ -1,56 +1,48 @@
 package com.zinzin.loltft.adapter;
 
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.zinzin.loltft.R;
 import com.zinzin.loltft.model.Team;
-import com.zinzin.loltft.model.Unit;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
-import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+public class TeamDialogAdapter extends RecyclerView.Adapter<TeamDialogAdapter.ViewHolder> {
 
-public class HeaderTeamRecyclerViewSection extends StatelessSection {
-    private static final String TAG = HeaderTeamRecyclerViewSection.class.getSimpleName();
-    private String title;
-    private List<Team.Hero> list;
     private Activity activity;
+    private List<Team.Hero> heroList = new ArrayList<>();
     private OnItemClickListener listener;
 
     public void setListener(OnItemClickListener listener) {
         this.listener = listener;
     }
-
-    public HeaderTeamRecyclerViewSection(Activity activity, String title, List<Team.Hero> list) {
-        super(SectionParameters.builder()
-                .itemResourceId(R.layout.item_team)
-                .headerResourceId(R.layout.header_team_layout)
-                .build());
+    public TeamDialogAdapter(Activity activity, List<Team.Hero> heroList) {
         this.activity = activity;
-        this.title = title;
-        this.list = list;
+        this.heroList = heroList;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_team, viewGroup, false);
+        return new TeamDialogAdapter.ViewHolder(view);
     }
 
     @Override
-    public int getContentItemsTotal() {
-        return list.size();
-    }
-
-    @Override
-    public RecyclerView.ViewHolder getItemViewHolder(View view) {
-        return new TeamViewHolder(view);
-    }
-
-    @Override
-    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        final TeamViewHolder viewHolder = (TeamViewHolder) holder;
-        final Team.Hero hero = list.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
+        final Team.Hero hero = heroList.get(position);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,15 +81,37 @@ public class HeaderTeamRecyclerViewSection extends StatelessSection {
         }
     }
 
-    @Override
-    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-        return new HeaderViewHolder(view);
+    private void showDialogList(List<Team.Hero> heroList) {
+
     }
 
     @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-        HeaderViewHolder hHolder = (HeaderViewHolder) holder;
-        hHolder.headerTitle.setText(title);
+    public int getItemCount() {
+        return heroList.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivIconUnit, ivItem1,ivItem2,ivItem3, ivItemCombine1_1,ivItemCombine1_2, ivItemCombine2_1,ivItemCombine2_2, ivItemCombine3_1,ivItemCombine3_2;
+        TextView tvName, tvType;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvType = itemView.findViewById(R.id.tv_type);
+            ivIconUnit = itemView.findViewById(R.id.iv_hero);
+            ivItem1 = itemView.findViewById(R.id.iv_item_1);
+            ivItem2 = itemView.findViewById(R.id.iv_item_2);
+            ivItem3 = itemView.findViewById(R.id.iv_item_3);
+            ivItemCombine1_1 = itemView.findViewById(R.id.iv_combine_1_1);
+            ivItemCombine1_2 = itemView.findViewById(R.id.iv_combine_1_2);
+            ivItemCombine2_1 = itemView.findViewById(R.id.iv_combine_2_1);
+            ivItemCombine2_2 = itemView.findViewById(R.id.iv_combine_2_2);
+            ivItemCombine3_1 = itemView.findViewById(R.id.iv_combine_3_1);
+            ivItemCombine3_2 = itemView.findViewById(R.id.iv_combine_3_2);
+        }
+
+        void bind(final Team.Hero combine, final int position) {
+        }
     }
 
     public interface OnItemClickListener {

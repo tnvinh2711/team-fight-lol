@@ -8,6 +8,7 @@ public class Item {
     String des;
     String url;
     List<String> listCombine;
+    List<ItemBuilder> listItemBuilder;
 
     public Item() {
     }
@@ -50,5 +51,13 @@ public class Item {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public List<ItemBuilder> getListItemBuilder() {
+        return listItemBuilder;
+    }
+
+    public void setListItemBuilder(List<ItemBuilder> listItemBuilder) {
+        this.listItemBuilder = listItemBuilder;
     }
 }

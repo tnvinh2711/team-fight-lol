@@ -25,7 +25,7 @@
             android:layout_margin="16dp"
             android:layout_marginBottom="-16dp"
             android:gravity="center_horizontal"
-            android:text="We recommend using these LoL TFT Team Comp Builds as we consider them to be the Best Build Comps in the game at the moment. We list the 3 Best Items to Build on each Champion."
+            android:text="We recommend using these LoL TFT Team Comp Builds as we consider them to be the Best Build Comps in the game at the moment. We list the 3 Best Items to Build on each Champion\n\nClick Team title to show detail."
             android:textColor="@color/white" />
 
         <androidx.recyclerview.widget.RecyclerView

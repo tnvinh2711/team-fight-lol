@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,9 +55,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
                     = new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false);
             viewHolder.rcvCombine.setLayoutManager(layoutManager);
             viewHolder.rcvCombine.setAdapter(combineAdapter);
-            viewHolder.rcvCombine.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.rcvCombine.setVisibility(View.GONE);
+            ItemBuilderAdapter combineAdapter = new ItemBuilderAdapter(activity, item.getListItemBuilder());
+            GridLayoutManager adapterManager = new GridLayoutManager(activity, 4);
+            viewHolder.rcvCombine.setLayoutManager(adapterManager);
+            viewHolder.rcvCombine.setAdapter(combineAdapter);
         }
 
     }

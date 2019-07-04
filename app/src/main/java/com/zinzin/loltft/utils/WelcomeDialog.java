@@ -43,29 +43,6 @@ public class WelcomeDialog extends Dialog {
                 .duration(1000)
                 .repeat(100000)
                 .playOn(llAds);
-        llAdsShow.setVisibility(View.GONE);
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("show_ads");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    show_ads = dataSnapshot.getValue(Integer.class);
-                    switch (show_ads) {
-                        case 0:
-                            llAdsShow.setVisibility(View.GONE);
-                            break;
-                        case 1:
-                            llAdsShow.setVisibility(View.VISIBLE);
-                            break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
         llAdsShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
