@@ -72,7 +72,7 @@ public class HeroFragment extends Fragment {
     private List<Origin> originList = new ArrayList<>();
     private List<Unit> heroListFilter = new ArrayList<>();
     private EditText edtSearch;
-    private ImageView ivFilter;
+    private ImageView ivFilter, ivInfo;
     private Dialog mBottomSheetDialog;
     private boolean isFilter = false;
     private String[] listOrigin;
@@ -83,10 +83,10 @@ public class HeroFragment extends Fragment {
     private String classSelected = "";
     private String originSelected = "";
 
-    private boolean isLoadAd;
-    private boolean isPay;
+    private WelcomeDialog welcomeDialog;
+    private boolean isLoadAd, isLoadClickAd;
     private int clickitem = 0;
-    private InterstitialAd mInterstitialAd;
+    private InterstitialAd mInterstitialAd, mInterstitialAdClick;
 
     public static HeroFragment newInstance() {
         return new HeroFragment();
@@ -96,10 +96,8 @@ public class HeroFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hero, container, false);
         initView(view);
-        isPay = Preference.getBoolean(getActivity(), "isPay", false);
-        if (!isPay) {
-            loadAd();
-        }
+        loadAd();
+        setUpDialog();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -121,7 +119,10 @@ public class HeroFragment extends Fragment {
 
     private void loadAd() {
         mInterstitialAd = new InterstitialAd(getActivity());
+        mInterstitialAdClick = new InterstitialAd(getActivity());
         mInterstitialAd.setAdUnitId("ca-app-pub-5796098881172039/1121152663");
+        mInterstitialAdClick.setAdUnitId("ca-app-pub-5796098881172039/2309686229");
+        mInterstitialAdClick.loadAd(new AdRequest.Builder().build());
         if (Preference.getBoolean(getActivity(), "firstrun", true)) {
             mInterstitialAd.loadAd(new AdRequest.Builder().build());
         } else {
@@ -148,15 +149,53 @@ public class HeroFragment extends Fragment {
             }
 
         });
+        mInterstitialAdClick.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                isLoadClickAd = true;
+            }
+
+            @Override
+            public void onAdClosed() {
+                mInterstitialAdClick.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                mInterstitialAdClick.loadAd(new AdRequest.Builder().build());
+            }
+        });
     }
 
     private void initView(View view) {
         rvUnits = view.findViewById(R.id.rcv_units);
         edtSearch = view.findViewById(R.id.edt_search);
         ivFilter = view.findViewById(R.id.iv_filter);
+        ivInfo = view.findViewById(R.id.iv_info);
         llLoading = view.findViewById(R.id.ll_loading);
         llLoading.setVisibility(View.VISIBLE);
         rvUnits.setVisibility(View.GONE);
+        ivInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (welcomeDialog != null && !welcomeDialog.isShowing()) welcomeDialog.show();
+            }
+        });
+    }
+
+    private void setUpDialog() {
+        welcomeDialog = new WelcomeDialog(getActivity(), new WelcomeDialog.DialogCallBack() {
+            @Override
+            public void onClickOpen() {
+                if (isLoadClickAd) {
+                    mInterstitialAdClick.show();
+                    isLoadClickAd = false;
+                } else {
+                    Toast.makeText(getActivity(), "Không có quảng cáo, xin vui lòng mở sau", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        welcomeDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     private void setUpBottomSheetDialog() {

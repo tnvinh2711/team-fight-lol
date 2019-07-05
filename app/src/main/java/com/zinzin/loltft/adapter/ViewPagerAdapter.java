@@ -22,38 +22,23 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private BuilderFragment builderFragment;
     private InfoFragment infoFragment;
     private IAPFragment iapFragment;
-    private boolean isPay;
-
-    public ViewPagerAdapter(FragmentManager fm, boolean isPay) {
+    public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
         heroFragment = HeroFragment.newInstance();
         roundFragment = RoundFragment.newInstance();
         itemFragment = ItemFragment.newInstance();
         builderFragment = BuilderFragment.newInstance();
         infoFragment = InfoFragment.newInstance();
-        this.isPay = isPay;
         iapFragment = IAPFragment.newInstance();
-        if (isPay) {
-            childFragments = new Fragment[]{
-                    itemFragment,
-                    roundFragment,
-                    heroFragment,
-                    builderFragment,
-                    infoFragment
-            };
-        } else {
-            childFragments = new Fragment[]{
-                    itemFragment,
-                    roundFragment,
-                    heroFragment,
-                    builderFragment,
-                    infoFragment,
-                    iapFragment
-            };
-        }
-
+        childFragments = new Fragment[] {
+                itemFragment,
+                roundFragment,
+                heroFragment,
+                builderFragment,
+                infoFragment,
+                iapFragment
+        };
     }
-
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
     }
