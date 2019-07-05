@@ -1,22 +1,38 @@
 package com.zinzin.loltft;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryRecord;
+import com.android.billingclient.api.PurchaseHistoryResponseListener;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.zinzin.loltft.adapter.ViewPagerAdapter;
+import com.zinzin.loltft.utils.Preference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import am.appwise.components.ni.NoInternetDialog;
 import devlight.io.library.ntb.NavigationTabBar;
@@ -25,13 +41,20 @@ import devlight.io.library.ntb.NavigationTabBar;
 public class MainActivity extends AppCompatActivity {
     private NoInternetDialog noInternetDialog;
     private AdView mAdView;
+    boolean isPay = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isPay =  Preference.getBoolean(this,"isPay", false);
+        if(!isPay) setUpAds();
+        initUI();
+    }
+
+    private void setUpAds() {
         MobileAds.initialize(this, "ca-app-pub-5796098881172039~7278199612");
         mAdView = findViewById(R.id.adView);
-        mAdView.setVisibility(View.GONE);
         mAdView.loadAd(new AdRequest.Builder().build());
         mAdView.setAdListener(new AdListener() {
             @Override
@@ -52,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 }, 1800000);
             }
         });
-        initUI();
     }
 
 
@@ -60,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
         noInternetDialog = new NoInternetDialog.Builder(this).build();
         final View view = findViewById(R.id.divider_view);
         final ViewPager viewPager = findViewById(R.id.vp_horizontal_ntb);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
-        final String[] colors = getResources().getStringArray(R.array.default_preview);
+        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), isPay));
+        final String[] colors = getResources().getStringArray(R.array.color);
         view.setBackgroundColor(Color.parseColor(colors[2]));
         final NavigationTabBar navigationTabBar = findViewById(R.id.ntb_horizontal);
         final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
@@ -105,6 +127,16 @@ public class MainActivity extends AppCompatActivity {
                         .title("Teams")
                         .build()
         );
+        if (!isPay) {
+            models.add(
+                    new NavigationTabBar.Model.Builder(
+                            getResources().getDrawable(R.drawable.ads_remove_icon),
+                            Color.parseColor(colors[5]))
+                            .selectedIcon(getResources().getDrawable(R.drawable.ads_remove_icon))
+                            .title("Ads")
+                            .build()
+            );
+        }
         navigationTabBar.setBgColor(R.color.colorPrimaryDark);
         navigationTabBar.setModels(models);
         navigationTabBar.setViewPager(viewPager, 2);
@@ -148,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 3000);
     }

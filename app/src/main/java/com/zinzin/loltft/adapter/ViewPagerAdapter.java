@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.zinzin.loltft.fragment.BuilderFragment;
 import com.zinzin.loltft.fragment.HeroFragment;
+import com.zinzin.loltft.fragment.IAPFragment;
 import com.zinzin.loltft.fragment.InfoFragment;
 import com.zinzin.loltft.fragment.ItemFragment;
 import com.zinzin.loltft.fragment.RoundFragment;
@@ -20,21 +21,39 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     private ItemFragment itemFragment;
     private BuilderFragment builderFragment;
     private InfoFragment infoFragment;
-    public ViewPagerAdapter(FragmentManager fm) {
+    private IAPFragment iapFragment;
+    private boolean isPay;
+
+    public ViewPagerAdapter(FragmentManager fm, boolean isPay) {
         super(fm);
         heroFragment = HeroFragment.newInstance();
         roundFragment = RoundFragment.newInstance();
         itemFragment = ItemFragment.newInstance();
         builderFragment = BuilderFragment.newInstance();
         infoFragment = InfoFragment.newInstance();
-        childFragments = new Fragment[] {
-                itemFragment,
-                roundFragment,
-                heroFragment,
-                builderFragment,
-                infoFragment
-        };
+        this.isPay = isPay;
+        iapFragment = IAPFragment.newInstance();
+        if (isPay) {
+            childFragments = new Fragment[]{
+                    itemFragment,
+                    roundFragment,
+                    heroFragment,
+                    builderFragment,
+                    infoFragment
+            };
+        } else {
+            childFragments = new Fragment[]{
+                    itemFragment,
+                    roundFragment,
+                    heroFragment,
+                    builderFragment,
+                    infoFragment,
+                    iapFragment
+            };
+        }
+
     }
+
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
     }
