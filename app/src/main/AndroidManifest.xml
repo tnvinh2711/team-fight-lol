@@ -36,6 +36,16 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5796098881172039~7278199612"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.zinzin.loltft.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>
