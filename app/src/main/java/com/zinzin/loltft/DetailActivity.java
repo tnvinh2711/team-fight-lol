@@ -66,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
                 if (detail != null) {
                     setupUI(detail);
                 } else {
-                    Toast.makeText(DetailActivity.this, "Something went wrong!! please back android try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailActivity.this, "Something went wrong!! please back and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -74,7 +74,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setData(final OnDataReceiveCallback callback) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("detailList").child(getIntent().getStringExtra("name"));
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db_test").child("detailList").child(getIntent().getStringExtra("name"));
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -66,8 +66,6 @@ public class HeroFragment extends Fragment {
     private List<Unit> heroList_b = new ArrayList<>();
     private List<Unit> heroList_c = new ArrayList<>();
     private List<Unit> heroList_d = new ArrayList<>();
-    private List<Unit> heroList_e = new ArrayList<>();
-    private List<Unit> heroList_f = new ArrayList<>();
     private List<Origin> classList = new ArrayList<>();
     private List<Origin> originList = new ArrayList<>();
     private List<Unit> heroListFilter = new ArrayList<>();
@@ -209,7 +207,7 @@ public class HeroFragment extends Fragment {
         final ChipCloud chipCloudRace = sheetView.findViewById(R.id.chip_cloud_race);
         Button btnDone = sheetView.findViewById(R.id.btn_done);
         TextView tvReset = sheetView.findViewById(R.id.tv_reset);
-        final String[] listCost = new String[]{"$1", "$2", "$3", "$4", "$5"};
+        final String[] listCost = new String[]{"1$", "2$", "3$", "4$", "5$"};
         final String[] listStatus = new String[]{"S", "A", "B", "C", "D", "E", "F"};
         listOrigin = new String[originList.size()];
         listClass = new String[classList.size()];
@@ -413,32 +411,23 @@ public class HeroFragment extends Fragment {
         heroList_b.clear();
         heroList_c.clear();
         heroList_d.clear();
-        heroList_e.clear();
-        heroList_f.clear();
         for (Unit unit : heroList) {
             switch (unit.getTier()) {
-                case "S":
+                case "5":
                     heroList_s.add(unit);
                     break;
-                case "A":
+                case "4":
                     heroList_a.add(unit);
                     break;
-                case "B":
+                case "3":
                     heroList_b.add(unit);
                     break;
-                case "C":
+                case "2":
                     heroList_c.add(unit);
                     break;
-                case "D":
+                case "1":
                     heroList_d.add(unit);
                     break;
-                case "E":
-                    heroList_e.add(unit);
-                    break;
-                case "F":
-                    heroList_f.add(unit);
-                    break;
-
             }
         }
     }
@@ -446,7 +435,7 @@ public class HeroFragment extends Fragment {
     private void setUpRecycleView() {
         GridLayoutManager adapterManager = new GridLayoutManager(getActivity(), 3);
         getListSection(heroList);
-        HeaderRecyclerViewSection viewSection_S = new HeaderRecyclerViewSection(getActivity(), "Tier S", heroList_s, R.color.color_tier_s);
+        HeaderRecyclerViewSection viewSection_S = new HeaderRecyclerViewSection(getActivity(), "Cost 5$", heroList_s, R.color.color_tier_s);
         viewSection_S.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
@@ -464,7 +453,7 @@ public class HeroFragment extends Fragment {
                 }
             }
         });
-        HeaderRecyclerViewSection viewSection_A = new HeaderRecyclerViewSection(getActivity(), "Tier A", heroList_a, R.color.color_tier_a);
+        HeaderRecyclerViewSection viewSection_A = new HeaderRecyclerViewSection(getActivity(), "Cost 4$", heroList_a, R.color.color_tier_a);
         viewSection_A.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
@@ -482,7 +471,7 @@ public class HeroFragment extends Fragment {
                 }
             }
         });
-        HeaderRecyclerViewSection viewSection_B = new HeaderRecyclerViewSection(getActivity(), "Tier B", heroList_b, R.color.color_tier_b);
+        HeaderRecyclerViewSection viewSection_B = new HeaderRecyclerViewSection(getActivity(), "Cost 3$", heroList_b, R.color.color_tier_b);
         viewSection_B.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
@@ -500,7 +489,7 @@ public class HeroFragment extends Fragment {
                 }
             }
         });
-        HeaderRecyclerViewSection viewSection_C = new HeaderRecyclerViewSection(getActivity(), "Tier C", heroList_c, R.color.color_tier_c);
+        HeaderRecyclerViewSection viewSection_C = new HeaderRecyclerViewSection(getActivity(), "Cost 2$", heroList_c, R.color.color_tier_c);
         viewSection_C.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
@@ -518,7 +507,7 @@ public class HeroFragment extends Fragment {
                 }
             }
         });
-        HeaderRecyclerViewSection viewSection_D = new HeaderRecyclerViewSection(getActivity(), "Tier D", heroList_d, R.color.color_tier_d);
+        HeaderRecyclerViewSection viewSection_D = new HeaderRecyclerViewSection(getActivity(), "Cost 1$", heroList_d, R.color.color_tier_d);
         viewSection_D.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
             @Override
             public void OnItemClick(Unit item, int position) {
@@ -536,50 +525,11 @@ public class HeroFragment extends Fragment {
                 }
             }
         });
-        HeaderRecyclerViewSection viewSection_E = new HeaderRecyclerViewSection(getActivity(), "Tier E", heroList_e, R.color.color_tier_e);
-        viewSection_E.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
-            @Override
-            public void OnItemClick(Unit item, int position) {
-                clickitem++;
-                if (isLoadAd && clickitem > 1) {
-                    Preference.save(getActivity(), "firstrun", false);
-                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
-                    Preference.save(getActivity(), "LoadAds", true);
-                    mInterstitialAd.show();
-                    isLoadAd = false;
-                } else {
-                    Intent intent = new Intent(getActivity(), DetailActivity.class);
-                    intent.putExtra("name", item.getName());
-                    startActivity(intent);
-                }
-            }
-        });
-        HeaderRecyclerViewSection viewSection_F = new HeaderRecyclerViewSection(getActivity(), "Tier F", heroList_f, R.color.color_tier_f);
-        viewSection_F.setListener(new HeaderRecyclerViewSection.OnItemClickListener() {
-            @Override
-            public void OnItemClick(Unit item, int position) {
-                clickitem++;
-                if (isLoadAd && clickitem > 1) {
-                    Preference.save(getActivity(), "firstrun", false);
-                    Preference.save(getActivity(), "Time", System.currentTimeMillis());
-                    Preference.save(getActivity(), "LoadAds", true);
-                    mInterstitialAd.show();
-                    isLoadAd = false;
-                } else {
-                    Intent intent = new Intent(getActivity(), DetailActivity.class);
-                    intent.putExtra("name", item.getName());
-                    startActivity(intent);
-                }
-
-            }
-        });
         sectionAdapter.addSection(viewSection_S);
         sectionAdapter.addSection(viewSection_A);
         sectionAdapter.addSection(viewSection_B);
         sectionAdapter.addSection(viewSection_C);
         sectionAdapter.addSection(viewSection_D);
-        sectionAdapter.addSection(viewSection_E);
-        sectionAdapter.addSection(viewSection_F);
         adapterManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -601,7 +551,7 @@ public class HeroFragment extends Fragment {
     }
 
     private void getData(final OnDataReceiveCallback callback) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("unit");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db_test").child("unit");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -50,7 +50,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         Glide.with(activity).load(item.getUrl()).apply(RequestOptions.bitmapTransform(new RoundedCorners(14))).into(viewHolder.ivIcon);
         viewHolder.tvDes.setText(item.getDes());
         if(item.getListCombine()!= null && item.getListCombine().size()>0){
-            CombineAdapter combineAdapter = new CombineAdapter(activity, item.getListCombine());
+            List<String> listCombine = new ArrayList<>();
+            for(int i = 1; i<item.getListCombine().size(); i++){
+                listCombine.add(item.getListCombine().get(i));
+            }
+            CombineAdapter combineAdapter = new CombineAdapter(activity, listCombine);
             LinearLayoutManager layoutManager
                     = new LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false);
             viewHolder.rcvCombine.setLayoutManager(layoutManager);

@@ -138,7 +138,7 @@ public class BuildTeamActivity extends AppCompatActivity {
     }
 
     private void getData(final OnDataReceiveCallback callback) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("unit");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db_test").child("unit");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

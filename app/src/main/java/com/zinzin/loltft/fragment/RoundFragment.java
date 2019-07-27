@@ -71,7 +71,7 @@ public class RoundFragment extends Fragment {
     }
 
     public void getData(final OnDataReceiveCallback callback) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("roundList");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db_test").child("roundList");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -44,7 +44,7 @@ public class InfoFragment extends Fragment {
     }
 
     private void getData(final OnDataReceiveCallback callback) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db").child("teamList2");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("tft_db_test").child("teamList2");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
